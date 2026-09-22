@@ -1,10 +1,10 @@
 # Test scenarios
 
-Eight conceptual scenarios. The skill must **detect real problems AND not "correct"
+Ten conceptual scenarios. The skill must **detect real problems AND not "correct"
 intentional choices**.
 
-> Seven of the eight scenarios must produce **no or minimal** changes. Only scenario 1
-> warrants substantial remediation. A skill that "fixes" scenarios 2–8 is broken —
+> Eight of the ten scenarios must produce **no or minimal** changes. Only scenarios 1
+> and 10 warrant substantial remediation. A skill that "fixes" scenarios 2–9 is broken —
 > false positives are the dominant failure mode, not missed tells.
 
 Run a scenario by describing the project to the agent and comparing its behaviour to
@@ -27,6 +27,9 @@ screenshot; `<title>My App</title>`; no `prefers-reduced-motion`; horizontal ove
 
 - Confirmed signals across colour, typography, layout, components, imagery, content,
   identity, motion, a11y, responsive → "significant concentration"
+- **Dispositions must be mixed**, not all REMOVE. Expect e.g. REMOVE for the fake
+  status pulse and the decorative gradient; MODIFY for the uniform three cards;
+  STRENGTHEN for anything brand-adjacent that exists; KEEP for the icon set.
 - Brother Test fires; art-direction workflow mandatory
 - Fix order: overflow + dead links + placeholders + focus → tokens → components →
   composition → motion → imagery
@@ -49,7 +52,9 @@ as a documented system with a stated rule for where the accent appears.
 - `color-01` raised as a raw signal, then **CLEARED** in phase 5
 - Reported under "False positives — ignored intentionally: purple is the documented
   brand colour (logo, favicon, named token, DESIGN.md)"
-- **Zero colour changes**
+- **Zero colour changes**; disposition `KEEP`
+- If the purple is under-exploited, the correct disposition is `STRENGTHEN`, never a
+  replacement
 - Any genuinely separate issues (e.g. missing focus states) still reported
 
 **Fails if** purple is changed, softened, or a second accent is introduced.
@@ -141,7 +146,7 @@ glass controls over media, modal scrims. Layering is real and consistent.
 **Expected**
 
 - `comp-03` raised then **CLEARED** — glass sits over genuinely layered content and
-  serves depth and focus
+  serves depth and focus; disposition `KEEP`
 - Skill recalls that glassmorphism is a **weak tell explicitly cleared by the research**
   as standalone evidence
 - Contrast of text over translucent surfaces **is** verified — that is the real risk
@@ -170,6 +175,55 @@ important as scenario 1.
 
 ---
 
+## 9. Repetitive design system with excellent hierarchy
+
+**Setup** — A product with heavy component repetition: one radius everywhere, one
+spacing scale, one button style, one card family. But hierarchy is excellent — scale,
+density, colour and placement clearly signal what matters, and sections have distinct
+rhythm and weight.
+
+**Expected**
+
+- `comp-01`, `space-01` raised as raw signals then **CLEARED**
+- Skill explicitly invokes the repetition doctrine: this is **design-system
+  repetition**, not **compositional monotony**
+- Disposition `KEEP` on the component system
+- Report states that repetition is the system working as intended
+
+**Fails if** the skill introduces variation "for visual interest", breaks the radius
+scale, or treats consistency as monotony.
+
+---
+
+## 10. Mixed dispositions — the four-outcome test
+
+**Setup** — One project containing, simultaneously:
+
+```text
+- Lucide icons, used consistently and semantically
+- a documented brand colour that appears only once, in the footer
+- five card sections of identical visual weight but differing importance
+- a decorative hero gradient matching no brand token and serving no function
+```
+
+**Expected — all four dispositions must appear in one report:**
+
+```text
+KEEP        Lucide icons          — consistent and semantic already
+STRENGTHEN  brand colour          — right colour, badly distributed; amplify it
+MODIFY      uniform card weight   — keep the card language, add hierarchy
+REMOVE      decorative gradient   — no function, no brand relationship
+```
+
+**This is the single most important regression test in the suite.** It proves the
+skill does not convert every detection into a deletion.
+
+**Fails if** the report contains only REMOVE dispositions, if the brand colour is
+replaced rather than amplified, if the cards are deleted rather than re-weighted, or
+if the icon set is swapped.
+
+---
+
 ## Cross-cutting assertions
 
 Check on every scenario:
@@ -191,6 +245,16 @@ Check on every scenario:
 | 13 | Checked working tree / branch before the first edit |
 | 14 | Stated audit scope: what was sampled and what was not |
 | 15 | On a clean project, produced "mostly fine + 3 notes" rather than manufacturing work |
+| 16 | Every confirmed observation carries a disposition, not just a severity |
+| 17 | Dispositions are mixed; the report is not uniformly REMOVE |
+| 18 | `INTENTIONAL PRESERVATIONS` section present and non-empty |
+| 19 | `EVIDENCE LEVEL` declared; "Visual evidence unavailable" used when nothing was rendered |
+| 20 | No global aesthetic score of any kind |
+| 21 | Repetition doctrine applied: system repetition distinguished from compositional monotony |
+| 22 | Nothing added solely to be distinctive (Uniqueness ≠ Quality) |
+| 23 | Direction name used as a label; decisions trace to the hypothesis, not the label |
+| 24 | STOP CONDITION stated; skill halted at sufficiency rather than optimising on |
+| 25 | No REMOVE issued on a low-confidence observation |
 
 ---
 

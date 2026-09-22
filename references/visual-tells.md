@@ -12,6 +12,34 @@ A tell is **an unchosen default**, not a banned value. Three questions decide ev
 
 If justified → clear it. Report under "False positives", do not touch.
 
+A tell that survives those three questions still does **not** authorise deletion. It
+receives a disposition — `KEEP` / `STRENGTHEN` / `MODIFY` / `REMOVE` — per
+`workflows/audit.md` §6. Detection and repair are separate decisions.
+
+## Repetition doctrine
+
+```text
+Repetition is not the problem. Unjustified repetition is the problem.
+```
+
+A design system is necessarily repetitive. Repetition becomes a signal only in
+combination: `repetition + no hierarchy + no semantic reason + no meaningful variation`.
+
+| Design-system repetition — legitimate | Compositional monotony — a signal |
+|---|---|
+| same radius across components | every section has the same composition |
+| same spacing scale | every card has the same visual weight |
+| same button style | every element has the same density |
+| same treatment for one family of cards | every section has the same rhythm |
+| same typographic system | nothing signals what matters most |
+
+Left column → usually `KEEP` or `STRENGTHEN`.
+Right column → usually `MODIFY`. Rarely `REMOVE`.
+
+This distinction governs `comp-01`, `comp-02`, `comp-05`, `layout-02`, `layout-05`,
+`space-01` and `motion-01` in particular — the rules most often misread as
+"too much repetition, delete some".
+
 ## Severity
 
 | Level | Meaning | Examples |

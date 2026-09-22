@@ -58,9 +58,172 @@ A visual choice becomes suspicious when it is:
 The 2026 "tasteful default" (cream background + editorial serif + sage green + grain)
 is itself catalogued as tell `identity-03`. Swapping into it resets the clock.
 
+### The axioms
+
+```text
+Detect ≠ Fix
+Generic ≠ Bad
+Repetition ≠ Bad
+Popular ≠ Bad
+Unusual ≠ Good
+Unique ≠ Good
+AI-generated ≠ Automatically Bad
+Human-made ≠ Automatically Good
+
+Intentionality > novelty.
+Coherence    > decoration.
+Context      > heuristics.
+Evidence     > assumptions.
+Design decisions > style recipes.
+```
+
+> **AI Slop Killer does not fight AI aesthetics. It fights unintentional design.**
+
 ---
 
-## 2. When to use
+## 2. Detect ≠ Fix — the reasoning chain
+
+**A detected signal never by itself authorises a modification.**
+
+The rule catalogue is a **system of observation and diagnosis**, not a list of things
+to delete. Never reason:
+
+```text
+tell detected → element is bad → remove it        ❌
+```
+
+Always reason:
+
+```text
+signal detected
+  → observation        what is literally there
+  → diagnosis          what problem, if any, it actually causes
+  → context validation brand, design system, product, history
+  → false positive?    → CLEARED, stop here
+  → disposition        KEEP / STRENGTHEN / MODIFY / REMOVE
+  → design decision    what we do and why
+  → implementation     natively in this project's stack
+  → verification       did it work, did we break anything
+```
+
+### Worked example — the same signal, four possible endings
+
+```text
+Signal: Inter used everywhere.
+
+❌ → replace Inter.
+
+✓  → examine the typographic hierarchy
+   → is Inter coherent with the brand?
+   → is it genuinely causing a problem?
+   → KEEP (brand face, hierarchy strong) | STRENGTHEN (scale too timid)
+   | MODIFY (keep face, build the scale) | rarely REMOVE (with a content reason)
+```
+
+The same discipline applies without exception to: purple · gradients · rounded cards ·
+bento · glassmorphism · Lucide · Tailwind · dark mode · serif · asymmetry · animation ·
+spacing · borders. **None of these is bad in itself.**
+
+---
+
+## 3. The disposition layer
+
+After false-positive validation, every **CONFIRMED** observation receives exactly one
+disposition. This is the mechanism that stops detection collapsing into deletion.
+
+| Disposition | When | Action |
+|---|---|---|
+| **KEEP** | The choice is intentional, coherent and sufficiently justified | Change nothing. Record it as a preservation. |
+| **STRENGTHEN** | The choice is right but its expression is weak or under-exploited | Improve the existing choice. Do not replace it. |
+| **MODIFY** | The principle is sound but its current form causes a problem | Change the form, keep the principle. |
+| **REMOVE** | No sufficient justification; creates incoherence; a plainly generic artefact | Remove it. |
+
+### STRENGTHEN — the disposition that is usually missing
+
+Most real projects need this one more than REMOVE:
+*good brand colour poorly distributed · good typeface with weak hierarchy · good motif
+used timidly · good photography inconsistently treated.*
+**Improve the existing choice; do not substitute a new one.**
+
+### MODIFY — change the form, keep the principle
+
+*Five sections share one card treatment → the repetition is fine, the identical visual
+weight is not.* Keep the card language, introduce hierarchy through surface treatment,
+scale, spacing and density. Not: "remove the cards, use sharp corners."
+
+### REMOVE — only genuinely unjustifiable artefacts
+
+Decorative gradient with no function · fake status pulse · fake caret · generic stock
+imagery · decoration unrelated to the product.
+
+Selection procedure and a full worked example: `workflows/audit.md` §6 (operational).
+
+### Distribution sanity check
+
+A remediation plan where nearly everything is REMOVE has almost certainly skipped the
+diagnosis step. Expect a healthy mix, and expect KEEP to be common on real projects.
+
+---
+
+## 4. Repetition doctrine
+
+```text
+Repetition is not the problem.
+Unjustified repetition is the problem.
+```
+
+A design system is **necessarily** repetitive. That is what makes it a system.
+Repetition only becomes a signal when it combines with other factors:
+
+```text
+repetition
++ lack of hierarchy
++ lack of semantic reason
++ lack of meaningful variation
+```
+
+The skill must distinguish two different things:
+
+| **Design-system repetition** — legitimate | **Compositional monotony** — a signal |
+|---|---|
+| same radius across components | every section has the same composition |
+| same spacing scale | every card has the same visual weight |
+| same button style | every element has the same density |
+| same treatment for cards of one family | every section has the same rhythm |
+| same typographic system | nothing signals what matters most |
+
+The left column is consistency and should be **KEEP** or **STRENGTHEN**.
+The right column is absence of hierarchy and is usually **MODIFY** — rarely REMOVE.
+
+Before flagging repetition, ask: *is this one system applied consistently, or one
+composition applied thoughtlessly?*
+
+---
+
+## 5. Uniqueness ≠ Quality
+
+An unusual interface is not automatically a better interface. **Novelty must be a
+consequence of a justified design decision, never an objective in itself.**
+
+Explicitly forbidden "corrections":
+
+```text
+adding asymmetry only to be different
+adding unusual typography only to be different
+adding a strange shape only to be different
+adding motion only to give "personality"
+adding unexpected colours only to avoid looking generic
+```
+
+If the only justification for a change is *"this would be more distinctive"*, the
+change is not justified. Find the design reason or drop it.
+
+Conversely: a project using very common conventions but possessing a coherent,
+specific identity is **fine**. Do not manufacture uniqueness.
+
+---
+
+## 6. When to use
 
 Trigger when the user asks to:
 
@@ -72,7 +235,7 @@ Trigger when the user asks to:
 - run a design audit
 - visually refactor an interface
 
-## 3. When NOT to use
+## 7. When NOT to use
 
 Do **not** trigger merely because the project uses:
 
@@ -83,7 +246,7 @@ Every one of these can be entirely legitimate. Stack is never evidence.
 
 ---
 
-## 4. Progressive loading — read this before opening any other file
+## 8. Progressive loading — read this before opening any other file
 
 This skill is larger than any one task needs. **Never load it all.**
 
@@ -108,25 +271,47 @@ whole-codebase audits.
 
 ---
 
-## 5. Mandatory phase order
+## 9. Mandatory phase order
 
 Never skip ahead. Each phase gates the next.
 
 ```text
-1. Inspect        → workflows/audit.md §1      (understand the project)
-2. Detect         → rules/index.md, then targeted rules
-3. Classify       → workflows/audit.md §4      (P0/P1/P2, cluster them)
-4. Validate FPs   → workflows/audit.md §5      (kill false positives — CRITICAL)
-5. Art direction  → workflows/art-direction.md (define intent BEFORE editing)
+ 1. STATIC AUDIT      → workflows/audit.md §1–2   inspect stack, collect signals
+ 2. RUN APPLICATION   → workflows/audit.md §3     if the environment allows it
+ 3. VISUAL AUDIT      → workflows/audit.md §3     observe the actual rendering
+ 4. CROSS-CHECK       → workflows/audit.md §3b    reconcile source vs rendering
+ 5. CLASSIFY          → workflows/audit.md §4     P0/P1/P2, cluster
+ 6. VALIDATE FPs      → workflows/audit.md §5     CLEARED / CONFIRMED / UNCERTAIN
+ 7. DISPOSITION       → workflows/audit.md §6     KEEP/STRENGTHEN/MODIFY/REMOVE
+ 8. ART DIRECTION     → workflows/art-direction.md
 ──────────────── ⛔ STOP. PRESENT TO USER. WAIT FOR APPROVAL. ────────────────
-6. Prioritize     → workflows/remediation.md §1
-7. Modify         → workflows/remediation.md §2
-8. Render         → workflows/verification.md §1
-9. Compare        → workflows/verification.md §2
-10. Verify        → workflows/verification.md §3
+ 9. PRIORITIZE        → workflows/remediation.md §1
+10. IMPLEMENT         → workflows/remediation.md §2
+11. RENDER            → workflows/verification.md §1
+12. BEFORE / AFTER    → workflows/verification.md §2
+13. VERIFY            → workflows/verification.md §3
+14. SUFFICIENCY       → workflows/verification.md §5   stop, or one more cycle
 ```
 
-**You may not edit a single style before phases 1–5 are complete AND approved.**
+**You may not edit a single style before phases 1–8 are complete AND approved.**
+
+Steps 2–4 are **first-order, not optional extras**. When a rendering can be obtained,
+skipping it is a defect in the audit, not a shortcut — see §12.
+
+### STOP EARLY
+
+Do not keep modifying simply because more rules could still fire. After each
+implement → render → verify cycle, answer:
+
+```text
+Is the design now coherent?
+Is the hierarchy clear?
+Is the product identity stronger?
+Are the remaining signals justified?
+```
+
+If yes → **STOP**. Report what remains and why it is intentionally left.
+Endless optimisation is itself a failure mode.
 
 ### The approval gate (between phase 5 and 6)
 
@@ -159,7 +344,7 @@ Two exceptions where you may proceed without asking:
 
 ---
 
-## 6. Phase 1 — inspect the project first (blocking)
+## 10. Phase 1 — inspect the project first (blocking)
 
 Before any modification, determine and write down:
 
@@ -190,7 +375,7 @@ If an item cannot be determined, record it as `unknown` — do not guess.
 
 ---
 
-## 7. The abstraction layer (this is what makes the skill portable)
+## 11. The abstraction layer (this is what makes the skill portable)
 
 Diagnose in **design concepts**, never in framework-specific class names:
 
@@ -219,24 +404,46 @@ the *implementation* must be native to each.
 
 ---
 
-## 8. Two-level audit
+## 12. Evidence levels and visual audit
 
-**Level 1 — static analysis** (always possible): code, CSS, tokens, components,
-structure, animations, assets, typography, icons.
+Every report opens by declaring its evidence level. This is not a formality — it
+bounds what the skill is entitled to claim.
 
-**Level 2 — visual analysis** (only if the environment genuinely allows running the
-project and capturing screenshots): homepage, main pages, responsive breakpoints,
-component states, interactions, motion.
+```text
+EVIDENCE LEVEL
+  [ ] source only          static analysis of code, CSS, tokens, assets
+  [ ] static + rendered    the app was run; output observed indirectly
+  [ ] browser + screenshots images actually captured and examined
+```
 
-> Never claim a visual analysis was performed if no image or screenshot was actually
-> observed. If you could not render, say so explicitly in the report and mark the
-> visual-only tells as `not-assessed`.
+### Visual analysis is first-order
 
-See `workflows/audit.md` for the tool-availability ladder.
+When the environment allows running the project, **the visual audit is required**, not
+a bonus. These cannot be derived from source: visual density · perceived hierarchy ·
+real contrast · balance · rhythm · typographic rendering · image quality · composition ·
+responsive behaviour · overall coherence.
+
+A stylesheet tells you a radius is `12px`. It does not tell you the page reads as a
+flat undifferentiated field.
+
+### The honesty rule
+
+> If no browser, screenshot or rendering is genuinely available, write exactly:
+>
+> ```text
+> Visual evidence unavailable.
+> Assessment limited to static/source analysis.
+> ```
+
+**Never write "the page visually feels…" without having observed the rendering.**
+Mark visual-only tells `not-assessed`. Never simulate the output of a tool that does
+not exist. Downgrading your own confidence is always correct; inflating it is not.
+
+See `workflows/audit.md` §3 for the tool-availability ladder and §3b for cross-checking.
 
 ---
 
-## 9. Signals, not scores
+## 13. Signals, not scores — and the sufficiency threshold
 
 Never output "this site is 87% AI-generated". Produce a **weighted signal inventory**.
 
@@ -257,9 +464,36 @@ Clustering heuristic from the research:
 Present this as a **diagnostic heuristic only** — never as proof of AI generation.
 Only signals that survived false-positive validation are counted.
 
+### No aesthetic score
+
+Never invent a global quality number:
+
+```text
+AI Slop Score: 23/100        ❌
+Design quality: B+           ❌
+87% AI-generated             ❌
+```
+
+Aesthetic quality is not quantifiable and a number invites mechanical optimisation
+against it. Answer these five questions instead — they are the real deliverable:
+
+```text
+What problems are materially affecting the design?
+Which are justified?
+Which need intervention?
+What changed?
+What remains intentionally unchanged?
+```
+
+### The sufficiency threshold
+
+The skill stops at **sufficiency**, not at perfection. Work is complete when the
+design is coherent, the hierarchy is clear, the identity is stronger and every
+remaining signal is justified and reported. Remaining P2s are a legitimate outcome.
+
 ---
 
-## 10. False positives are the heart of the skill
+## 14. False positives are the heart of the skill
 
 For every tell, actively look for the contextual justification before touching anything:
 
@@ -284,7 +518,7 @@ ignored intentionally", not fixed.
 
 ---
 
-## 11. The Brother Test (meta-signal)
+## 15. The Brother Test (meta-signal)
 
 ```text
 Hide the logo/brand.
@@ -302,9 +536,36 @@ This test must lead to **an identity analysis**, never to adding arbitrary decor
 Failing it opens `workflows/art-direction.md`; it does not authorise blobs, grain,
 or a random accent colour.
 
+### If the site fails the test
+
+```text
+do not decorate immediately.
+```
+
+Failing the Brother Test is a **diagnosis of missing identity**, not an instruction to
+make the design spectacular. Before proposing anything, examine where identity could
+legitimately come from:
+
+```text
+brand                 what already exists — logo, colours, voice, assets
+content               what the product actually says and shows
+typography            hierarchy and character already available
+composition           rhythm, density, the shape of the page
+imagery               real product, real people, real proof
+tone                  register of the writing
+product-specific info the data, states and objects unique to this product
+visual signatures     anything already recurring that could be amplified
+```
+
+Then name **what is actually missing**. Very often the answer is not "a new visual
+device" but "the identity that already exists is applied timidly" — which is
+**STRENGTHEN**, not invention.
+
+Adding decoration to pass the test is the failure mode this section exists to prevent.
+
 ---
 
-## 12. Art direction before remediation (mandatory gate)
+## 16. Art direction before remediation (mandatory gate)
 
 Before any broad modification, answer — in writing, in the report:
 
@@ -328,9 +589,30 @@ What should NOT be introduced?
   "warm-consumer", "industrial"). "Clean and modern" is not a direction — it is the
   slop default.
 
+### The name is a label, never a recipe
+
+Derive, do not select:
+
+```text
+product / context evidence → design hypothesis → principles
+→ concrete decisions → coherent visual system
+```
+
+Forbidden: `Direction = "Industrial Editorial" → therefore use X, Y, Z.` ❌
+That lets a label generate decisions instead of evidence. Every decision must trace
+back to the hypothesis.
+
+### Prefer one dominant visual signature
+
+Not "one motif only". Additional identity elements are allowed when they each have
+independent semantic justification, form a coherent system, do not compete
+unnecessarily, and together reinforce identity — e.g.
+`typography + brand colour + a photographic treatment + a small geometric language`
+operating as one idea. What fails is unrelated devices bolted on for personality.
+
 ---
 
-## 13. Forbidden mechanical substitutions
+## 17. Forbidden mechanical substitutions
 
 Never perform these *because they are supposedly "less AI"*:
 
@@ -348,7 +630,7 @@ Every modification must answer a design reason, written in the changelog entry.
 
 ---
 
-## 14. Minimum necessary change
+## 18. Minimum necessary change
 
 > **Change as little code as necessary to achieve a meaningful visual improvement.**
 
@@ -359,7 +641,7 @@ Every modification must answer a design reason, written in the changelog entry.
 
 ---
 
-## 15. Hard prohibitions
+## 19. Hard prohibitions
 
 ```text
 DO NOT:
@@ -379,7 +661,7 @@ DO NOT:
 
 ---
 
-## 16. Safety and scope control
+## 20. Safety and scope control
 
 ### Before the first edit
 
@@ -450,7 +732,7 @@ frequently correct output.**
 
 ---
 
-## 17. Reference map — load on demand
+## 21. Reference map — load on demand
 
 Read `rules/index.md` first — the compact triage table. Pull full rules from
 `rules/tells.yaml` per category. Load a reference file only when remediating that domain.
@@ -476,26 +758,43 @@ Tests: `tests/scenarios.md` (7 scenarios the skill must pass, incl. 6 that must 
 
 ---
 
-## 18. Final report format
+## 22. Final report format
+
+**Normative full skeleton: `workflows/verification.md` §4** (loaded at reporting time).
+
+Required sections, in order:
 
 ```text
-## Audit
-Detected signals:
-- [id] name — severity — evidence (file:line or screenshot)
-
-## False positives
-Ignored intentionally:
-- [id] name — justification found
-
-## Art direction
-- named direction, motif, type hierarchy, colour system, density, motion intent,
-  explicit "do not introduce" list
-
-## Changes
-- file — what changed — design reason
-
-## Verification
-- responsive / accessibility / interaction / motion / tests / build
+PROJECT CONTEXT · EVIDENCE LEVEL · OBSERVATIONS · ART DIRECTION
+IMPLEMENTATION · VERIFICATION · INTENTIONAL PRESERVATIONS
+REMAINING SIGNALS · STOP CONDITION
 ```
 
-Never give a bare score. Explain the decisions.
+Each observation carries: signal · evidence · confidence · category ·
+false-positive check · diagnosis · **disposition**.
+
+ART DIRECTION must record **existing strengths**, the **design hypothesis**, the
+principles, the proposed changes, and the **explicitly rejected alternatives** —
+what was considered and deliberately not done, with the reason.
+
+### INTENTIONAL PRESERVATIONS is mandatory
+
+Not optional, and must not be empty on a real project. It is the evidence that the
+skill exercised judgement rather than pattern-matching:
+
+```text
+- Brand terracotta preserved because it is a documented identity colour.
+- Inter preserved because typography hierarchy, not font family, was the actual issue.
+- Lucide preserved because icon consistency is already strong.
+- Card system preserved; only its uniform visual weight was modified.
+```
+
+A report with no preservations means either a genuinely exceptional project, or a
+skill that deleted everything it detected. Assume the second and re-check.
+
+### Report rules
+
+- **Never a bare score**, percentage or grade. Explain decisions.
+- **Never state or imply the design was AI-generated.** Origin is not knowable.
+- Declare the evidence level honestly; mark unassessed tells as such.
+- List uncertain signals as open questions rather than acting on them.

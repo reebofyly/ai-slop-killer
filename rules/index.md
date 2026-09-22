@@ -7,6 +7,20 @@ working in**. Never load the whole YAML upfront.
 
 `W` = weak tell: never counts alone, only inside a cluster.
 
+## Before using this table
+
+> **This is an observation catalogue, not a list of things to delete.**
+
+A row firing means *look here*, never *fix this*. Every hit must pass:
+
+```text
+observation → diagnosis → context validation → false positive?
+→ disposition (KEEP / STRENGTHEN / MODIFY / REMOVE) → decision
+```
+
+`KEEP` and `STRENGTHEN` are normal, frequent outcomes on real projects.
+Never `REMOVE` on low confidence. See `SKILL.md` §2–§3 (normative).
+
 | id | sev | name | fires when |
 |---|---|---|---|
 | `color-01` | P0 | default-purple-indigo-gradient | gradient hue appears in no owned asset or named token |

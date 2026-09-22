@@ -96,9 +96,10 @@ typography · icons.
 
 ---
 
-## §3 — Detect: Level 2, visual analysis
+## §3 — Run the application and audit visually (first-order)
 
-**Only if the environment genuinely allows running the project and capturing output.**
+**When the environment allows running the project, this phase is required.** It is not
+an optional enhancement to the static audit.
 
 Tool-availability ladder — use the highest rung actually available:
 
@@ -109,15 +110,54 @@ Tool-availability ladder — use the highest rung actually available:
 | 2 | Static render of markup/CSS | Layout structure, contrast arithmetic |
 | 1 | Source only | Static tells only |
 
-If Level 2 runs, examine: homepage · main pages · responsive (mobile, tablet, desktop,
-wide) · component states · interactions · motion.
+If rung 3+ is available, run the project and observe: homepage · main pages ·
+responsive (mobile, tablet, desktop, wide) · component states · interactions · motion.
 
-> **Never claim a visual analysis was performed if no image or screenshot was actually
-> observed.** Mark visual-only tells `not-assessed` and say so in the report. Never
-> simulate the output of a tool that does not exist.
+### What only the rendering can tell you
 
-Visual-only tells: `img-04`, `resp-01`, `resp-02`, `a11y-01` (measured), most `motion-*`
-behaviour, `identity-01` (properly run).
+These cannot be derived reliably from source, and guessing at them from CSS is the
+most common way an audit goes wrong:
+
+```text
+visual density        perceived hierarchy     real contrast
+balance               rhythm                  typographic rendering
+image quality         composition             responsive behaviour
+overall coherence
+```
+
+### The honesty rule
+
+> Never claim a visual analysis was performed if no image or screenshot was actually
+> observed. If you could not render, write exactly:
+>
+> ```text
+> Visual evidence unavailable.
+> Assessment limited to static/source analysis.
+> ```
+
+Mark visual-only tells `not-assessed`. Never write "the page visually feels…" without
+having observed it. Never simulate the output of a tool that does not exist.
+
+Visual-only tells: `img-04`, `resp-01`, `resp-02`, `a11y-01` (measured), most
+`motion-*` behaviour, `identity-01` (properly run).
+
+---
+
+## §3b — Cross-check source against rendering
+
+When both a static audit and a rendering exist, reconcile them before classifying.
+Each direction of mismatch means something different:
+
+| Situation | Reading |
+|---|---|
+| Source suggests a problem, rendering looks fine | Likely a **false positive**. The token exists but is overridden, scoped, or visually inconsequential. Downgrade or clear. |
+| Rendering shows a problem, source looked clean | A **composition or emergent** problem. Often the most valuable finding — monotony, density, balance. |
+| Both agree | **High confidence.** Record as such. |
+| Cannot render | Static only; cap confidence at medium for anything visual. |
+
+Record a `confidence` value (high / medium / low) per observation. It is carried into
+the report and it constrains how aggressively a disposition may be applied:
+**never REMOVE on low confidence.**
 
 ---
 
@@ -184,6 +224,61 @@ If it fires and is not cleared, `workflows/art-direction.md` becomes mandatory.
 
 ---
 
+## §6 — Assign a disposition (phase 7)
+
+> **Detect ≠ Fix.** A detected signal never by itself authorises a modification.
+
+Triage answered *is this signal real?* Disposition answers *what should happen to it?*
+**Every CONFIRMED observation gets exactly one.** This is the step that stops detection
+collapsing into deletion.
+
+```text
+KEEP        intentional, coherent, sufficiently justified  → change nothing
+STRENGTHEN  right choice, weak or under-exploited expression → improve it
+MODIFY      sound principle, problematic current form       → change the form
+REMOVE      unjustified / incoherent / plainly generic      → remove it
+```
+
+### How to choose
+
+Ask in this order and stop at the first yes:
+
+1. **Is the choice itself defensible for this product?**
+   No → `REMOVE`.
+2. **Is the principle right but the current form causing the problem?**
+   Yes → `MODIFY`. (Most repetition and hierarchy findings land here.)
+3. **Is the choice right but expressed too timidly or inconsistently?**
+   Yes → `STRENGTHEN`.
+4. Otherwise → `KEEP`.
+
+### Constraints
+
+- **Never REMOVE on low confidence.** Downgrade to MODIFY, or report as UNCERTAIN.
+- `REMOVE` is for genuinely unjustifiable artefacts: decorative gradient with no
+  function, fake status pulse, fake caret, generic stock imagery, decoration unrelated
+  to the product.
+- A plan that is nearly all `REMOVE` has skipped the diagnosis step. Re-check it.
+- `KEEP` observations are **not** discarded — they go into INTENTIONAL PRESERVATIONS
+  in the report. Showing what you deliberately did not touch is part of the deliverable.
+
+### Worked example
+
+```text
+OBSERVATION       five sections share the same rounded card treatment
+EVIDENCE          src/sections/*.vue, shared Card component
+CONFIDENCE        high (source + rendering agree)
+FP CHECK          card system is intentional and reused across the app
+DIAGNOSIS         repetition is fine; identical visual WEIGHT is not, because the
+                  five sections differ in semantic importance
+DISPOSITION       MODIFY
+DECISION          keep the card language; introduce hierarchy via surface treatment,
+                  scale, spacing and content density
+```
+
+Not: "rounded cards detected → remove rounded cards → use sharp corners."
+
+---
+
 ## Exit criteria
 
 - [ ] All 15 inspection items recorded (or marked `unknown`)
@@ -192,6 +287,10 @@ If it fires and is not cleared, `workflows/art-direction.md` becomes mandatory.
 - [ ] Severities taken from `tells.yaml`, not inflated
 - [ ] Analysis level honestly stated; unassessed tells marked as such
 - [ ] Audit scope recorded (what was sampled, what was skipped)
+- [ ] Evidence level declared; visual audit run if the environment allowed it
+- [ ] Confidence recorded per observation
+- [ ] Every CONFIRMED observation carries a disposition
+- [ ] KEEP items captured for INTENTIONAL PRESERVATIONS
 - [ ] Zero files modified
 
 → Proceed to `workflows/art-direction.md`.

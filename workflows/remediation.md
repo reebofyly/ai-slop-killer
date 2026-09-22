@@ -39,7 +39,19 @@ fix(a11y): restore visible focus indicators
 
 ## §1 — Prioritize
 
-Only **confirmed** signals (survived false-positive validation) are eligible.
+Only **confirmed** signals (survived false-positive validation) are eligible, and each
+already carries a disposition from `workflows/audit.md` §6. **The disposition dictates
+the kind of action; severity only dictates the order.**
+
+```text
+KEEP        → no work. Goes straight to INTENTIONAL PRESERVATIONS in the report.
+STRENGTHEN  → amplify what exists. Usually token-level and very cheap.
+MODIFY      → change the form, keep the principle. Most hierarchy work lives here.
+REMOVE      → delete. Only for unjustifiable artefacts, never on low confidence.
+```
+
+If you find yourself writing a REMOVE for something you have not diagnosed, stop and
+return to §6. **Detect ≠ Fix** — detection is not authorisation.
 
 ```text
 P0  → identity
@@ -67,6 +79,13 @@ P2  → cosmetic details
    completion, not taste. Fix them before any aesthetic work.
 2. **Highest leverage first within a tier.** A token-level change that propagates
    everywhere beats twenty local edits. See the order in `references/remediation.md`.
+
+### STOP EARLY
+
+Do not keep modifying because more rules could still fire. After each
+implement → render → verify cycle, run the sufficiency check
+(`workflows/verification.md` §5). If the design is coherent, the hierarchy clear, the
+identity stronger and the remaining signals justified → **STOP**.
 
 ### Stop conditions
 
@@ -100,6 +119,21 @@ list them as "noted, not changed" in the report.
 3. **A design reason per change** — recorded. "Looks less AI-generated" is not a
    reason; if that is the only justification, drop the change.
 4. **No mechanical substitutions** — the forbidden list below.
+
+### Never manufacture uniqueness
+
+Forbidden as a justification for any change:
+
+```text
+adding asymmetry only to be different
+adding unusual typography only to be different
+adding a strange shape only to be different
+adding motion only to give "personality"
+adding unexpected colours only to avoid looking generic
+```
+
+Novelty is a **consequence** of a justified decision, never an objective.
+If the only reason is "this would be more distinctive" → drop the change.
 
 ### Forbidden mechanical substitutions
 
@@ -163,6 +197,9 @@ After each batch, before moving on:
 - Does this still look like *this product*, rather than the current template?
 - Could this have been achieved with fewer changes?
 - Did I touch anything the art direction's "do not introduce" list forbids?
+- Did I turn a MODIFY into a REMOVE because removal was easier?
+- Did I change anything marked KEEP?
+- Did I add something solely to look distinctive?
 
 If any answer is wrong → revert that change before continuing.
 
@@ -192,5 +229,8 @@ A clean, minimal, reviewable diff is part of the deliverable.
 - [ ] Cleared false positives untouched
 - [ ] Changes implemented natively in the project's stack
 - [ ] Diff is minimal and readable
+- [ ] Every change matches its recorded disposition
+- [ ] No KEEP item was modified
+- [ ] Nothing was added merely to appear distinctive
 
 → Proceed to `workflows/verification.md`.

@@ -46,9 +46,36 @@ remediation drifting into decoration, and it must be explicit.
 
 ---
 
-## §3 — Name the direction
+## §3 — Derive the direction (the name is only a label)
 
-A direction must be **nameable**. Examples of real directions:
+The direction must be **derived**, not selected from a catalogue:
+
+```text
+product / context evidence
+        ↓
+design hypothesis          "this product is X for Y, so the interface should Z"
+        ↓
+design principles          the few rules that follow from the hypothesis
+        ↓
+concrete decisions         tokens, hierarchy, composition, motion
+        ↓
+coherent visual system
+```
+
+> **A direction name is a convenient label. It is never a recipe.**
+
+Forbidden reasoning:
+
+```text
+Direction = "Industrial Editorial"  →  therefore use X, Y, Z.     ❌
+```
+
+That inverts the logic: it lets a label generate decisions instead of letting evidence
+generate them. Every concrete decision must trace back to the hypothesis, not to the
+connotations of the label.
+
+A direction must nevertheless be **nameable** — if you cannot name it, it is not yet a
+direction. Examples of real labels:
 
 ```text
 editorial          utilitarian-dense    technical-mono
@@ -82,7 +109,12 @@ MOTIF                                             the one element that belongs t
 ### Constraints
 
 - **Cap active hues** at roughly three plus a neutral ramp.
-- **One motif is enough.** Several at once is noise, not identity.
+- **Prefer one dominant visual signature.** Additional identity elements are allowed
+  when they each have independent semantic justification, form a coherent system, do
+  not compete unnecessarily, and together reinforce product or brand identity.
+  A perfectly acceptable combination:
+  `typography + brand colour + a specific photographic treatment + a small geometric language`
+  — provided they operate as one system rather than four unrelated ideas.
 - Every token gets a **role**, not just a value. A value without a role is a default.
 - Decide where motion is **absent** — that is a decision too.
 
@@ -114,6 +146,9 @@ Do not introduce:
 - [ ] Is the motif one element, applied with restraint?
 - [ ] Have I written what must **not** be introduced?
 - [ ] Can every planned change be justified against this direction?
+- [ ] Does every decision trace back to the hypothesis rather than to the label?
+- [ ] Am I adding anything only to be different? (Uniqueness ≠ Quality — drop it.)
+- [ ] Have I listed what already works, so it survives remediation?
 
 If the honest answer to the second question is "yes, a competitor could use this
 identically" — the direction is not finished. Return to §2.
@@ -143,10 +178,19 @@ N confirmed signals (P0: x, P1: y, P2: z) — top 5 listed with evidence
 M cleared as intentional — with the justification found for each
 Sampled: <what you actually looked at>   Not assessed: <what you could not>
 
+## Existing strengths (being kept)
+What already works and will not be touched — with the reason.
+
 ## Proposed art direction
-Direction: <name>   (existing, preserved | newly proposed)
-Motif · type hierarchy · colour system · density · motion intent
+Design hypothesis: <derived from product/context evidence>
+Principles: <the few rules that follow>
+Direction label: <name>   (existing, preserved | newly proposed)
+Signature · type hierarchy · colour system · density · motion intent
+Explicitly rejected alternatives: <what was considered and NOT done, and why>
 Do not introduce: ...
+
+## Dispositions
+KEEP: ...   STRENGTHEN: ...   MODIFY: ...   REMOVE: ...
 
 ## Planned changes
 ~N files, scoped to: <token layer / shared components / N pages>
@@ -185,7 +229,10 @@ Rewrite the direction and re-present. Do not carry forward the parts they reject
 - [ ] All ten questions answered in writing
 - [ ] Direction has a name that is not "clean and modern"
 - [ ] Tokens and roles defined in the abstraction layer
-- [ ] One motif identified
+- [ ] One dominant signature identified (secondary elements justified as a system)
+- [ ] Design hypothesis written; the label is a label, not a recipe
+- [ ] Existing strengths listed
+- [ ] Rejected alternatives recorded
 - [ ] "Do not introduce" list written
 - [ ] **Presented to the user and approved** (or an exception above applies)
 - [ ] Still zero files modified

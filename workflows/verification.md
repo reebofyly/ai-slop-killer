@@ -92,61 +92,51 @@ Confirm explicitly that you did **not**:
 
 ## §4 — Report
 
+**This is the normative report skeleton.** `SKILL.md` §22 summarises it.
+
 ```text
-## Audit
+PROJECT CONTEXT
+  stack · styling system · design system · brand assets found
 
-Analysis level: static only | static + visual (screenshots observed)
-Audit scope: <what was sampled>  |  Not audited: <what was skipped>
-Detected signals:
-- [id] name — severity — evidence (file:line or screenshot)
-- ...
+EVIDENCE LEVEL
+  [ ] source only  [ ] static + rendered  [ ] browser + screenshots
+  Scope audited: ...        Not audited: ...
+  (If nothing could be rendered:
+   "Visual evidence unavailable. Assessment limited to static/source analysis.")
 
-Signal concentration: N confirmed signals
-(diagnostic heuristic only — not a claim about how the design was produced)
+OBSERVATIONS
+  - signal / evidence / confidence / category
+    false-positive check / diagnosis / disposition
 
-Not assessed: [ids] — reason (e.g. no rendering available)
+  Signal concentration: N confirmed
+  (diagnostic heuristic only — never a claim about how the design was produced)
 
-## False positives
+ART DIRECTION
+  existing strengths · design hypothesis · principles · proposed changes
+  explicitly rejected alternatives
 
-Ignored intentionally:
-- [id] name — justification found (brand token, design system, product context…)
-- ...
+IMPLEMENTATION
+  files · components · tokens · assets · motion      (each with its design reason)
 
-## Art direction
+VERIFICATION
+  desktop / tablet / mobile · accessibility · responsive
+  build / typecheck / lint · baseline · rollback point
 
-- Direction: <name>  (existing / proposed)
-- Product · audience · feel · differentiation
-- Motif
-- Typography hierarchy
-- Color system
-- Density
-- Motion intent
-- Do not introduce: ...
+INTENTIONAL PRESERVATIONS
+  what was deliberately NOT changed, and why        ← mandatory, must not be empty
 
-## Changes
+REMAINING SIGNALS
+  which signals remain and why they are justified
 
-- file — what changed — design reason
-- ...
-
-## Verification
-
-- responsive:     mobile / tablet / desktop / wide — result
-- accessibility:  contrast / focus / keyboard / states — result
-- interaction:    hover / focus / active / disabled — result
-- motion:         reduced-motion / technique / intent — result
-- tests:          result
-- build:          result
-- baseline:       build/tests passed before changes? y/n
-- rollback:       branch <name>, revert point <sha>
-
-## Noted, not changed
-
-- [id] name — why it was left (low value, high churn, needs a product decision)
-
-## Open questions
-
-- uncertain signals requiring a decision from the team
+STOP CONDITION
+  why further modification is or is not justified
 ```
+
+### No aesthetic score
+
+Never emit `AI Slop Score: 23/100`, a letter grade, or a percentage. Aesthetic quality
+is not quantifiable and a number invites optimising against the metric. The five
+questions in `SKILL.md` §13 are the deliverable.
 
 ### Report rules
 
@@ -156,6 +146,30 @@ Ignored intentionally:
 - The "False positives" section is not optional — it is evidence the skill exercised
   judgement rather than pattern-matching.
 - List uncertain signals as open questions rather than silently acting on them.
+
+---
+
+## §5 — Sufficiency check (phase 14)
+
+The skill stops at **sufficiency**, not perfection. After each
+implement → render → verify cycle, answer:
+
+```text
+Is the design now coherent?
+Is the hierarchy clear?
+Is the product identity stronger?
+Are the remaining signals justified?
+```
+
+**All yes → STOP.** Write the STOP CONDITION section and finish.
+
+Do not run another cycle merely because more rules could still fire. Remaining P2s are
+a legitimate outcome; so is "the rest is churn". Endless optimisation is a failure mode,
+and each additional cycle adds regression risk for diminishing visual return.
+
+Continue only if a **P0 or P1 remains materially unresolved** and the fix is within the
+approved scope. Anything outside that scope goes to the report as an open question, not
+into the diff.
 
 ---
 

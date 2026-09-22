@@ -69,7 +69,12 @@ a spatial rhythm (unusual density, an unusual measure)
 a texture or material, if it relates to the product
 ```
 
-**One is enough.** Choose one and apply it consistently. Several at once produces noise.
+**Prefer one dominant signature.** Additional identity elements are legitimate when
+each has independent semantic justification, they form a coherent system, they do not
+compete unnecessarily, and together they reinforce the identity. For example
+`typography + brand colour + a photographic treatment + a small geometric language`
+is a system, not clutter — provided it reads as one idea. What fails is four unrelated
+devices bolted on to manufacture personality.
 
 Test: could someone recognise a screenshot with no logo? That is the target.
 
@@ -84,6 +89,18 @@ like the current "tasteful" template rather than like the product, the work fail
 
 The question is never "does this read as not-AI?" It is **"does this read as this
 product?"**
+
+## If the Brother Test fails
+
+```text
+do not decorate immediately.
+```
+
+Examine where identity could legitimately come from — brand, content, typography,
+composition, imagery, tone, product-specific information, existing visual signatures —
+then name what is actually missing. Most often the honest answer is
+*"the identity that already exists is applied timidly"*, which is **STRENGTHEN**,
+not invention.
 
 ## Do not
 
