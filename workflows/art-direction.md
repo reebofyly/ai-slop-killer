@@ -131,6 +131,54 @@ accessibility; do not add identity."* That is a legitimate and complete outcome.
 
 ---
 
+---
+
+## §8 — Present and wait (approval gate)
+
+**This is the end of the read-only half of the skill.** Present before editing:
+
+```text
+## Audit summary
+N confirmed signals (P0: x, P1: y, P2: z) — top 5 listed with evidence
+M cleared as intentional — with the justification found for each
+Sampled: <what you actually looked at>   Not assessed: <what you could not>
+
+## Proposed art direction
+Direction: <name>   (existing, preserved | newly proposed)
+Motif · type hierarchy · colour system · density · motion intent
+Do not introduce: ...
+
+## Planned changes
+~N files, scoped to: <token layer / shared components / N pages>
+Highest-impact first: ...
+Left alone: <cleared FPs, and P2s judged not worth the churn>
+
+Proceed? Adjust the direction? Narrow the scope?
+```
+
+Then **stop**. Do not start editing in the same turn.
+
+### Why this gate exists
+
+The direction is pure judgement and everything downstream inherits it. A wrong
+direction discovered after forty files is far more expensive than one question. It is
+also the user's last chance to say "actually purple *is* our brand" before the skill
+acts on a misread.
+
+### Proceeding without asking
+
+Only two cases:
+
+- the user explicitly said to go ahead without check-ins
+- the only changes are **broken-function fixes** — mobile overflow, missing focus
+  states, leftover placeholders, dead links. Completion, not taste. Fix and report.
+
+### If the user adjusts
+
+Rewrite the direction and re-present. Do not carry forward the parts they rejected.
+
+---
+
 ## Exit criteria
 
 - [ ] Existing direction found and preserved, **or** a new one proposed with justification
@@ -139,6 +187,7 @@ accessibility; do not add identity."* That is a legitimate and complete outcome.
 - [ ] Tokens and roles defined in the abstraction layer
 - [ ] One motif identified
 - [ ] "Do not introduce" list written
+- [ ] **Presented to the user and approved** (or an exception above applies)
 - [ ] Still zero files modified
 
 → Proceed to `workflows/remediation.md`.

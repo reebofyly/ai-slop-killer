@@ -1,6 +1,39 @@
 # Workflow — Remediation (phases 6–7)
 
-Covers: Prioritize → Modify. Requires a completed audit **and** a written art direction.
+Covers: Prioritize → Modify. Requires a completed audit, a written art direction,
+**and the user's approval of that direction** (`workflows/art-direction.md` §8).
+
+---
+
+## §0 — Safety preflight
+
+Before the first edit:
+
+```text
+1. Working tree clean?   → if not, ask before touching anything
+2. VCS repo?             → work on a dedicated branch
+3. Build passes NOW?     → capture the baseline for comparison
+4. Tests exist?          → run them now, not only at the end
+```
+
+```bash
+git status --porcelain              # empty, or stop and ask
+git checkout -b design/art-direction
+git rev-parse HEAD                  # rollback point
+```
+
+**Never commit on the user's behalf unless asked.** Leave the work reviewable and
+revertible in one command. If there is no VCS, say so before editing and keep the diff
+smaller still.
+
+If the user does want commits: one per batch, never one giant commit, each message
+carrying the design reason.
+
+```text
+design(tokens): establish semantic colour roles and type scale
+design(components): introduce surface elevation hierarchy
+fix(a11y): restore visible focus indicators
+```
 
 ---
 
@@ -34,6 +67,18 @@ P2  → cosmetic details
    completion, not taste. Fix them before any aesthetic work.
 2. **Highest leverage first within a tier.** A token-level change that propagates
    everywhere beats twenty local edits. See the order in `references/remediation.md`.
+
+### Stop conditions
+
+Stop and report rather than pushing on when:
+
+- confirmed signals are 0–1 (coincidence — say so, change nothing)
+- the project has a strong existing direction and needs only consistency notes
+- the direction depends on product knowledge you do not have
+- fixing a tell would require architectural change
+- the high-impact changes are done and the rest is churn
+
+**"This is mostly fine, here are three things" is a valid and frequently correct output.**
 
 ### Do not do everything
 

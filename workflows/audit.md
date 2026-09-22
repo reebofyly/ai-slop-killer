@@ -5,6 +5,28 @@ Covers: Inspect → Detect → Classify → Validate false positives.
 
 ---
 
+## §0 — Scope the audit before starting
+
+Real projects are too large to read exhaustively. Decide the surface first:
+
+| Project size | Audit surface |
+|---|---|
+| < 20 components | Everything |
+| 20–100 components | Token layer + shared primitives + 3–5 representative pages |
+| Large app / monorepo | Token layer + design-system package + the single highest-traffic surface |
+| Monorepo, many apps | **Ask which app.** Never audit several at once. |
+
+Pick pages that differ **structurally**, not topically: a marketing page, a dense data
+view, a form, an empty state. Five varied pages reveal more than twenty similar ones.
+
+Token-layer and shared-component findings generalise across the app. Page-level
+findings do not — never extrapolate one page to the whole product.
+
+Record what you sampled and what you skipped; it goes in the report. An audit of 5 of
+80 pages is useful **only if its scope is stated**.
+
+---
+
 ## §1 — Inspect (blocking)
 
 Determine and record all fifteen. Mark `unknown` rather than guessing.
@@ -47,7 +69,9 @@ Determine and record all fifteen. Mark `unknown` rather than guessing.
 
 ## §2 — Detect: Level 1, static analysis
 
-Always possible. Walk `rules/tells.yaml` and collect **raw signals with evidence**.
+Always possible. Walk `rules/index.md` (the compact triage table) to decide which
+rules plausibly fire, then pull **only those categories** from `rules/tells.yaml`.
+Collect **raw signals with evidence**.
 Every signal needs a `file:line` or a concrete quotation. No evidence → not a signal.
 
 Targets: code · CSS · tokens · components · structure · animations · assets ·
@@ -167,6 +191,7 @@ If it fires and is not cleared, `workflows/art-direction.md` becomes mandatory.
 - [ ] Every signal has been through false-positive validation
 - [ ] Severities taken from `tells.yaml`, not inflated
 - [ ] Analysis level honestly stated; unassessed tells marked as such
+- [ ] Audit scope recorded (what was sampled, what was skipped)
 - [ ] Zero files modified
 
 → Proceed to `workflows/art-direction.md`.

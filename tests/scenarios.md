@@ -1,10 +1,10 @@
 # Test scenarios
 
-Seven conceptual scenarios. The skill must **detect real problems AND not "correct"
+Eight conceptual scenarios. The skill must **detect real problems AND not "correct"
 intentional choices**.
 
-> Six of the seven scenarios must produce **no or minimal** changes. Only scenario 1
-> warrants substantial remediation. A skill that "fixes" scenarios 2–7 is broken —
+> Seven of the eight scenarios must produce **no or minimal** changes. Only scenario 1
+> warrants substantial remediation. A skill that "fixes" scenarios 2–8 is broken —
 > false positives are the dominant failure mode, not missed tells.
 
 Run a scenario by describing the project to the agent and comparing its behaviour to
@@ -150,6 +150,26 @@ glass controls over media, modal scrims. Layering is real and consistent.
 
 ---
 
+## 8. Clean project, nothing to do
+
+**Setup** — A well-art-directed product with a documented design system, one
+inconsistency (a single off-scale spacing value) and nothing else.
+
+**Expected**
+
+- 0–1 confirmed signals → "probably coincidence"
+- Skill **stops** and reports rather than inventing work
+- No art direction proposed; the existing one is recognised
+- Output is a short note, not a refactor
+
+**Fails if** the skill manufactures findings to justify itself, proposes a new
+direction, or opens a remediation pass. This is the anti-overreach test and it is as
+important as scenario 1.
+
+---
+
+---
+
 ## Cross-cutting assertions
 
 Check on every scenario:
@@ -166,6 +186,11 @@ Check on every scenario:
 | 8 | Every change carries a design reason that is not "looks less AI" |
 | 9 | Visual analysis claimed only if screenshots were genuinely observed |
 | 10 | Uncertain signals reported as open questions, not silently changed |
+| 11 | Loaded `rules/index.md`, not the full `tells.yaml`, for a scoped task |
+| 12 | Stopped after art direction and asked before editing (unless exempt) |
+| 13 | Checked working tree / branch before the first edit |
+| 14 | Stated audit scope: what was sampled and what was not |
+| 15 | On a clean project, produced "mostly fine + 3 notes" rather than manufacturing work |
 
 ---
 

@@ -83,16 +83,42 @@ Every one of these can be entirely legitimate. Stack is never evidence.
 
 ---
 
-## 4. Mandatory phase order
+## 4. Progressive loading — read this before opening any other file
+
+This skill is larger than any one task needs. **Never load it all.**
+
+```text
+ALWAYS:        SKILL.md + rules/index.md              (~4.5k tokens)
+PER CATEGORY:  the matching block of rules/tells.yaml (~250 tokens each)
+WHEN FIXING:   references/<category>.md               (~800 tokens each)
+PER PHASE:     the one workflow file you are in       (~1.3k tokens each)
+```
+
+`rules/index.md` is the complete 54-rule catalogue compressed to a triage table.
+It is enough to decide **which** rules plausibly fire. Only then pull the full rule.
+
+Extract one rule without reading the whole YAML:
+
+```bash
+awk '/^  - id: comp-01$/,/^  - id: /' rules/tells.yaml | head -n -1
+```
+
+Loading `rules/tells.yaml` in full (~13.5k tokens) is a mistake in all but the rarest
+whole-codebase audits.
+
+---
+
+## 5. Mandatory phase order
 
 Never skip ahead. Each phase gates the next.
 
 ```text
-1. Inspect        → workflows/audit.md §1     (understand the project)
-2. Detect         → rules/tells.yaml          (collect raw signals)
-3. Classify       → workflows/audit.md §4     (P0/P1/P2, cluster them)
-4. Validate FPs   → workflows/audit.md §5     (kill false positives — CRITICAL)
+1. Inspect        → workflows/audit.md §1      (understand the project)
+2. Detect         → rules/index.md, then targeted rules
+3. Classify       → workflows/audit.md §4      (P0/P1/P2, cluster them)
+4. Validate FPs   → workflows/audit.md §5      (kill false positives — CRITICAL)
 5. Art direction  → workflows/art-direction.md (define intent BEFORE editing)
+──────────────── ⛔ STOP. PRESENT TO USER. WAIT FOR APPROVAL. ────────────────
 6. Prioritize     → workflows/remediation.md §1
 7. Modify         → workflows/remediation.md §2
 8. Render         → workflows/verification.md §1
@@ -100,11 +126,40 @@ Never skip ahead. Each phase gates the next.
 10. Verify        → workflows/verification.md §3
 ```
 
-**You may not edit a single style before phases 1–5 are complete.**
+**You may not edit a single style before phases 1–5 are complete AND approved.**
+
+### The approval gate (between phase 5 and 6)
+
+Art direction is pure judgement. If the direction is wrong, everything downstream is
+wrong — and the user finds out after forty files changed. So stop and present:
+
+```text
+## Audit summary
+N confirmed signals (P0: x, P1: y, P2: z) — top 5 listed
+M signals cleared as intentional — with justifications
+
+## Proposed art direction
+Direction: <name>   (existing, preserved | newly proposed)
+Motif · type hierarchy · colour system · density · motion intent
+Do not introduce: ...
+
+## Planned changes
+~N files, scoped to: <token layer / components / pages>
+Highest-impact first: ...
+
+Proceed? Adjust the direction? Narrow the scope?
+```
+
+Then **wait**. Do not begin editing on the same turn.
+
+Two exceptions where you may proceed without asking:
+- The user explicitly said to go ahead without check-ins.
+- The only changes are **broken-function fixes** (mobile overflow, missing focus
+  states, leftover placeholders, dead links). These are completion, not taste.
 
 ---
 
-## 5. Phase 1 — inspect the project first (blocking)
+## 6. Phase 1 — inspect the project first (blocking)
 
 Before any modification, determine and write down:
 
@@ -135,7 +190,7 @@ If an item cannot be determined, record it as `unknown` — do not guess.
 
 ---
 
-## 6. The abstraction layer (this is what makes the skill portable)
+## 7. The abstraction layer (this is what makes the skill portable)
 
 Diagnose in **design concepts**, never in framework-specific class names:
 
@@ -164,7 +219,7 @@ the *implementation* must be native to each.
 
 ---
 
-## 7. Two-level audit
+## 8. Two-level audit
 
 **Level 1 — static analysis** (always possible): code, CSS, tokens, components,
 structure, animations, assets, typography, icons.
@@ -181,7 +236,7 @@ See `workflows/audit.md` for the tool-availability ladder.
 
 ---
 
-## 8. Signals, not scores
+## 9. Signals, not scores
 
 Never output "this site is 87% AI-generated". Produce a **weighted signal inventory**.
 
@@ -204,7 +259,7 @@ Only signals that survived false-positive validation are counted.
 
 ---
 
-## 9. False positives are the heart of the skill
+## 10. False positives are the heart of the skill
 
 For every tell, actively look for the contextual justification before touching anything:
 
@@ -229,7 +284,7 @@ ignored intentionally", not fixed.
 
 ---
 
-## 10. The Brother Test (meta-signal)
+## 11. The Brother Test (meta-signal)
 
 ```text
 Hide the logo/brand.
@@ -249,7 +304,7 @@ or a random accent colour.
 
 ---
 
-## 11. Art direction before remediation (mandatory gate)
+## 12. Art direction before remediation (mandatory gate)
 
 Before any broad modification, answer — in writing, in the report:
 
@@ -275,7 +330,7 @@ What should NOT be introduced?
 
 ---
 
-## 12. Forbidden mechanical substitutions
+## 13. Forbidden mechanical substitutions
 
 Never perform these *because they are supposedly "less AI"*:
 
@@ -293,7 +348,7 @@ Every modification must answer a design reason, written in the changelog entry.
 
 ---
 
-## 13. Minimum necessary change
+## 14. Minimum necessary change
 
 > **Change as little code as necessary to achieve a meaningful visual improvement.**
 
@@ -304,7 +359,7 @@ Every modification must answer a design reason, written in the changelog entry.
 
 ---
 
-## 14. Hard prohibitions
+## 15. Hard prohibitions
 
 ```text
 DO NOT:
@@ -324,14 +379,86 @@ DO NOT:
 
 ---
 
-## 15. Reference map — load on demand
+## 16. Safety and scope control
 
-Read `rules/tells.yaml` first (it is the machine-readable catalogue of all 47 tells).
-Load a reference file only when working in that domain:
+### Before the first edit
+
+```text
+1. Is the working tree clean?  → if not, ask before touching anything.
+2. Is this a VCS repo?         → if yes, work on a dedicated branch.
+3. Does the build pass NOW?    → capture the baseline; you need it to compare.
+4. Are there tests?            → run them now, not only at the end.
+```
+
+Use whatever the project actually uses. If it is a git repo:
+
+```bash
+git status --porcelain          # must be empty, or stop and ask
+git checkout -b design/art-direction
+git rev-parse HEAD              # record: this is the rollback point
+```
+
+**Never commit on the user's behalf unless asked.** Leave changes staged or in the
+working tree so they can be reviewed and reverted with one command.
+
+If there is no VCS, say so explicitly before editing and keep the diff smaller still.
+
+### Commit in reviewable batches
+
+If the user does want commits, one per remediation batch, never one giant commit:
+
+```text
+design(tokens): establish semantic colour roles and type scale
+design(components): introduce surface elevation hierarchy
+design(motion): honour reduced-motion, remove blanket entrance animation
+fix(a11y): restore visible focus indicators
+```
+
+Each message states the design reason. A reviewer must be able to revert one batch
+without unpicking the others.
+
+### Scoping the audit — do not try to read everything
+
+Real projects are too large to audit exhaustively. Sample deliberately:
+
+| Project size | Audit surface |
+|---|---|
+| < 20 components | Everything |
+| 20–100 components | Token layer + shared primitives + 3–5 representative pages |
+| Large app / monorepo | Token layer + design-system package + the **single** highest-traffic surface |
+| Monorepo, many apps | **Ask which app.** Never audit several at once. |
+
+Choose pages that differ structurally — a marketing page, a dense data view, a form,
+an empty state. Five varied pages reveal more than twenty similar ones.
+
+**Token-layer and shared-component findings generalise. Page findings do not.**
+Say in the report what you sampled and what you did not — an audit of 5 of 80 pages
+is useful, but only if its scope is stated honestly.
+
+### Stop conditions
+
+Stop and report rather than pushing on when:
+
+- the confirmed signals are 0–1 (coincidence — say so, change nothing)
+- the project has a strong existing direction and only needs consistency notes
+- the direction depends on product knowledge you do not have
+- fixing a tell would require architectural change
+- you have made the high-impact changes and the rest is churn
+
+**A short, well-argued "this is mostly fine, here are three things" is a valid and
+frequently correct output.**
+
+---
+
+## 17. Reference map — load on demand
+
+Read `rules/index.md` first — the compact triage table. Pull full rules from
+`rules/tells.yaml` per category. Load a reference file only when remediating that domain.
 
 | File | Use when |
 |---|---|
-| `references/visual-tells.md` | Overview of all 47 tells + severity + clustering |
+| `rules/index.md` | **Always.** 54-rule triage table, ~1.6k tokens |
+| `references/visual-tells.md` | Severity model, clustering, weak tells, traceability |
 | `references/color.md` | Palette, gradients, semantic colour roles |
 | `references/typography.md` | Families, pairing, scale, hierarchy |
 | `references/layout.md` | Hero, grids, rhythm, composition, responsive |
@@ -349,7 +476,7 @@ Tests: `tests/scenarios.md` (7 scenarios the skill must pass, incl. 6 that must 
 
 ---
 
-## 16. Final report format
+## 18. Final report format
 
 ```text
 ## Audit

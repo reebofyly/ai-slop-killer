@@ -96,6 +96,7 @@ Confirm explicitly that you did **not**:
 ## Audit
 
 Analysis level: static only | static + visual (screenshots observed)
+Audit scope: <what was sampled>  |  Not audited: <what was skipped>
 Detected signals:
 - [id] name — severity — evidence (file:line or screenshot)
 - ...
@@ -135,6 +136,8 @@ Ignored intentionally:
 - motion:         reduced-motion / technique / intent — result
 - tests:          result
 - build:          result
+- baseline:       build/tests passed before changes? y/n
+- rollback:       branch <name>, revert point <sha>
 
 ## Noted, not changed
 

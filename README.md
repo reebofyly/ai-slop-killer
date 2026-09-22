@@ -41,8 +41,10 @@ YAML frontmatter and no runtime dependencies.
 
 ```text
 ai-slop-killer/
-├── SKILL.md                  entry point: rules, phases, prohibitions
-├── rules/tells.yaml          54 structured rules (the 47 research signs)
+├── SKILL.md                  entry point: rules, phases, safety, prohibitions
+├── rules/
+│   ├── index.md              compact triage table — load this, not the YAML
+│   └── tells.yaml            54 structured rules (the 47 research signs)
 ├── references/               11 domain guides, loaded on demand
 │   ├── visual-tells.md       overview, severity, clustering
 │   ├── color.md  typography.md  layout.md  components.md
@@ -50,7 +52,7 @@ ai-slop-killer/
 │   ├── identity.md           Brother Test, motif, the 2026 trap
 │   └── remediation.md        concept → stack mapping
 ├── workflows/                audit → art-direction → remediation → verification
-├── tests/scenarios.md        7 scenarios; 6 must produce no/minimal change
+├── tests/scenarios.md        8 scenarios; 7 must produce no/minimal change
 └── scripts/README.md         why there are deliberately no scripts
 ```
 
@@ -58,11 +60,26 @@ ai-slop-killer/
 
 ```text
 1. Inspect   2. Detect   3. Classify   4. Validate false positives
-5. Art direction   6. Prioritize   7. Modify
+5. Art direction
+   ⛔ STOP — present audit + direction, wait for approval
+6. Prioritize   7. Modify
 8. Render    9. Compare   10. Verify
 ```
 
-No style may be edited before phase 5 is complete.
+No style may be edited before phase 5 is complete **and approved**. Exception:
+broken-function fixes (mobile overflow, missing focus states, placeholders, dead
+links) proceed without asking — those are completion, not taste.
+
+## Progressive loading
+
+```text
+ALWAYS:        SKILL.md + rules/index.md              ~5.8k tokens
+PER CATEGORY:  one block of rules/tells.yaml          ~250 tokens
+WHEN FIXING:   references/<category>.md               ~800 tokens
+PER PHASE:     the one workflow file you are in       ~1.3k tokens
+```
+
+Loading `tells.yaml` in full (~13.5k tokens) is a mistake in all but whole-codebase audits.
 
 ## Signals, not scores
 
