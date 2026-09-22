@@ -1,0 +1,1361 @@
+
+# ai-slop-killer — structured tell catalogue
+# Source of truth: "47 signes visuels qu'un site web a été généré par une IA"
+#
+# READ THIS HEADER BEFORE USING ANY RULE.
+#
+# A tell is an UNCHOSEN DEFAULT, not a banned value.
+# A single tell is never evidence. Only clusters of *validated* tells are meaningful.
+# Every rule must pass its false_positives check before it is counted or remediated.
+# Severity is taken from the research and must not be inflated.
+
+meta:
+  version: 1.0.0
+  source: "47 signes visuels qu'un site web a été généré par une IA"
+  research_signs: 47
+  rule_count: 54
+  coverage_note: >
+    The 47 research signs map to 54 rules. Seven signs were split because they bundled
+    two independently-detectable and independently-remediable problems (e.g. the
+    research's "no human surfaces / no proof" sign splits into img-05 logo wall and
+    img-06 testimonials; "mobile never reviewed" splits into resp-01 breakage and
+    resp-02 scaling; "accessibility failures" splits into the four a11y rules).
+    No sign was dropped. See traceability below.
+  traceability:
+    color: [color-01, color-02, color-03, color-04, color-05]
+    typography: [type-01, type-02, type-03]
+    layout: [layout-01, layout-02, layout-03, layout-04, layout-05, layout-06]
+    components: [comp-01, comp-02, comp-03, comp-04, comp-05, comp-06, comp-07, comp-08]
+    spacing: [space-01, space-02]
+    imagery: [img-01, img-02, img-03, img-04, img-05, img-06]
+    content: [content-01, content-02, content-03]
+    identity: [identity-01, identity-02, identity-03]
+    motion: [motion-01, motion-02, motion-03, motion-04, motion-05, motion-06,
+             motion-07, motion-08, motion-09, motion-10, motion-11, motion-12]
+    accessibility: [a11y-01, a11y-02, a11y-03, a11y-04]
+    responsive: [resp-01, resp-02]
+  weak_tells:
+    note: >
+      The research explicitly classes these as low-confidence. They must never be
+      reported alone and never drive a remediation on their own.
+    ids: [comp-03, layout-03, layout-04, space-02, motion-04, motion-07, motion-09]
+    cleared_by_research: >
+      Bento grids (0.1% of complaints, actively defended), mesh/aurora backgrounds
+      (keyword artifact) and glassmorphism were examined and cleared as standalone
+      evidence. Tailwind, Next.js, rounded corners and a chosen purple are never evidence.
+  severities:
+    P0: critical signal — identity, hierarchy, structure, major motion
+    P1: important signal — components, imagery, spacing, interaction
+    P2: cosmetic signal — polish, micro-animation, detail
+    weak: explicitly low-confidence in the research; only counts inside a cluster
+  clustering_heuristic:
+    0-1: probably coincidence
+    2-3: several signals present
+    4+: significant concentration of signals
+  hard_rule: >
+    Never report a confidence that a design was AI-generated. Report suspicious
+    patterns and the absence of intentional decisions. Origin is unknowable.
+  universal_avoid:
+    - replacing one default with a different default
+    - any change whose justification is "this looks less AI"
+    - introducing a dependency to solve an aesthetic problem
+    - migrating framework, styling system or component library
+
+# =============================================================================
+# COLOR
+# =============================================================================
+tells:
+
+  - id: color-01
+    category: color
+    name: default-purple-indigo-gradient
+    severity: P0
+    description: >
+      Purple / indigo / blue gradient used with no apparent relationship to the
+      product identity. Traces to Tailwind's indigo-500 default becoming the
+      statistical median of training data.
+    signals:
+      - linear-gradient mixing hues in the 240-280 range
+      - the gradient appears in hero background, buttons and accents identically
+      - no other brand artefact (logo, favicon, existing asset) shares that hue
+    false_positives:
+      - documented brand colour
+      - intentional visual identity
+      - pre-existing design system token
+      - a product whose category legitimately owns violet
+    diagnostic_questions:
+      - Is this colour part of the brand?
+      - Is there a semantic reason for the gradient?
+      - Is the same treatment repeated everywhere without hierarchy?
+      - Does any owned asset (logo, illustration) contain this hue?
+    remediation_principle: >
+      Establish an intentional semantic colour system with defined roles. If the
+      gradient survives, it must be justified and used with hierarchy.
+    avoid:
+      - replacing purple with beige
+      - replacing purple with sage
+      - introducing a random accent colour
+      - removing all gradients as a category
+    validation:
+      - palette has semantic roles (PRIMARY / ACCENT / SURFACE / BORDER / TEXT_*)
+      - accent usage is intentional and not uniform
+      - visual identity is coherent across pages
+
+  - id: color-02
+    category: color
+    name: gradient-clipped-headline-text
+    severity: P1
+    description: Headline word rendered with a gradient text clip, purely decorative.
+    signals:
+      - background-clip:text / bg-clip-text on a heading
+      - the gradient hues match no brand token
+    false_positives:
+      - a recurring, systematised brand treatment used consistently
+      - a product about colour/creativity where it is thematic
+    diagnostic_questions:
+      - Does this treatment recur as a system, or appear once as decoration?
+      - Would removing it lose meaning or only lose sparkle?
+    remediation_principle: Carry emphasis through hierarchy (scale, weight, space) or a justified accent.
+    avoid:
+      - "replacing it with an underline cliché"
+      - "adding a different decorative effect"
+    validation:
+      - "emphasis reads without the effect"
+      - "contrast still passes"
+
+  - id: color-03
+    category: color
+    name: reflex-dark-mode
+    severity: P0
+    description: >
+      Permanent dark theme applied as a reflex, with no light variant and no
+      product reason.
+    signals:
+      - only a dark theme exists
+      - no theme toggle and no prefers-color-scheme handling
+      - dark surfaces are near-black with no tuned neutral ramp
+    false_positives:
+      - developer tools, media, monitoring, creative or night-use products
+      - a documented product decision
+      - dark-first brand with a maintained light variant
+    diagnostic_questions:
+      - Is dark mode right for the usage context?
+      - Is the neutral ramp tuned or a raw default?
+      - Does the product's audience work in dark environments?
+    remediation_principle: Make the theme a decision — tune the neutral ramp and state whether light is supported.
+    avoid:
+      - "forcing a light theme"
+      - "deleting dark mode"
+    validation:
+      - "theme choice is documented"
+      - "neutral ramp is deliberate"
+      - "contrast verified"
+
+  - id: color-04
+    category: color
+    name: neon-on-dark-glow
+    severity: P1
+    description: Cyan/violet neon on near-black, glowing card borders, animated accent glow behind hero.
+    signals:
+      - "glow box-shadows on non-interactive surfaces"
+      - "saturated neon accents on dark"
+      - "blurred colour orbs"
+    false_positives:
+      - "gaming"
+      - "music"
+      - "crypto"
+      - "cyber-security aesthetics with a coherent system"
+    diagnostic_questions:
+      - Does the glow encode state, or is it decoration?
+      - Is the accent applied with hierarchy or on every surface?
+    remediation_principle: Reserve luminosity for interactive or stateful elements; build elevation from neutrals.
+    avoid:
+      - "removing all colour"
+      - "flattening to grayscale"
+    validation:
+      - "glow only where it means something"
+      - "contrast passes on dark"
+
+  - id: color-05
+    category: color
+    name: untouched-framework-palette
+    severity: P1
+    description: >
+      Default framework greys and default primary button colour left exactly as
+      shipped (e.g. untouched neutral ramp + default blue), meaning no colour was chosen.
+    signals:
+      - palette values identical to framework defaults across the whole app
+      - no theme/token file overrides the defaults
+      - primary action colour is the library default
+    false_positives:
+      - early prototype explicitly not yet branded
+      - deliberate "system default" aesthetic, documented
+      - the default genuinely matches the brand colour
+    diagnostic_questions:
+      - Has any colour been overridden anywhere?
+      - Does a brand colour exist elsewhere (logo, marketing) that is unused here?
+    remediation_principle: Define the palette in the project's own token layer, even if some values stay close to defaults.
+    avoid:
+      - "picking a trendy replacement palette"
+      - "capping creativity with a fixed recipe"
+    validation:
+      - "tokens exist in-project"
+      - "semantic roles named"
+      - "brand colour reflected"
+
+# =============================================================================
+# TYPOGRAPHY
+# =============================================================================
+
+  - id: type-01
+    category: typography
+    name: single-neutral-sans-everywhere
+    severity: P0
+    description: >
+      One neutral sans (Inter / Roboto / Geist / system-ui) doing every job from
+      display to legal text, with no pairing and no display face.
+      The problem is the ABSENCE OF HIERARCHY, not the typeface itself.
+    signals:
+      - one font-family for the entire document
+      - display and body are visually indistinguishable apart from size
+      - no font-feature or optical-size usage
+    false_positives:
+      - deliberate single-typeface system with a strong size/weight/spacing scale
+      - brand typeface that happens to be a neutral sans
+      - Swiss/neo-grotesque direction executed with real hierarchy
+      - performance-constrained product limiting font payload
+    diagnostic_questions:
+      - Is there real hierarchy through scale, weight, spacing and colour?
+      - Is the single-family choice documented or accidental?
+      - Would a second face serve the content, or just decorate it?
+    remediation_principle: >
+      Build typographic hierarchy first. A pairing is optional; hierarchy is not.
+      Inter with a strong scale is fine. Inter with no scale is the problem.
+    avoid:
+      - automatically replacing Inter/Roboto/Geist
+      - forcing a serif display face
+      - adopting the current "editorial serif" default
+    validation:
+      - "defined type scale"
+      - "display vs body distinguishable"
+      - "roles documented"
+
+  - id: type-02
+    category: typography
+    name: flat-type-scale-and-weight
+    severity: P1
+    description: Regularly spaced sizes, only 400/600 weights, uniform line-height and tracking.
+    signals:
+      - "evenly-multiplied size steps"
+      - "two weights across the app"
+      - "identical line-height everywhere"
+    false_positives:
+      - "dense data UI where uniformity aids scanning"
+      - "documented restrained system"
+    diagnostic_questions:
+      - Can a user find the most important element in one glance?
+      - Does line-height differ between display and body?
+    remediation_principle: Give the scale contrast; tune tracking and leading per role.
+    avoid:
+      - "arbitrarily enlarging headings"
+      - "adding weights without roles"
+    validation:
+      - "scale documented"
+      - "display leading tightened"
+      - "labels/metadata have their own role"
+
+  - id: type-03
+    category: typography
+    name: one-word-styled-differently-in-headline
+    severity: P1
+    description: A single H1 word set in italic serif, a gradient or an accent colour, with no system behind it.
+    signals:
+      - "inline span with a different family/colour inside a heading"
+      - "occurs once or twice only"
+    false_positives:
+      - "a consistent brand emphasis treatment applied systematically with rules"
+    diagnostic_questions:
+      - Is there a documented rule for what gets emphasised?
+      - Does the emphasis mark meaning or decorate?
+    remediation_principle: Either systematise the emphasis with a rule, or carry it through hierarchy.
+    avoid:
+      - "swapping the italic serif for another decorative face"
+    validation:
+      - "emphasis rule stated and applied consistently"
+
+# =============================================================================
+# LAYOUT
+# =============================================================================
+
+  - id: layout-01
+    category: layout
+    name: templated-centered-hero
+    severity: P0
+    description: >
+      Pill badge above the H1, centered headline, subhead, two buttons
+      (solid + ghost). The exact generated template.
+    signals:
+      - badge/pill directly above H1
+      - center-aligned hero with paired primary/secondary CTA
+      - subhead restates the headline without new information
+    false_positives:
+      - centering is right for the content (short manifesto, single message)
+      - established brand pattern
+      - conversion-tested layout with evidence
+    diagnostic_questions:
+      - Is centering a decision suited to this content?
+      - Does the badge carry real information?
+      - Do both CTAs have distinct jobs?
+    remediation_principle: >
+      Let the content determine the composition. Do not decentre for the sake of it.
+    avoid:
+      - "forcing asymmetry"
+      - "forcing a split hero"
+      - "deleting the secondary CTA reflexively"
+    validation:
+      - "composition justified by content"
+      - "badge informative or removed"
+      - "CTAs differentiated"
+
+  - id: layout-02
+    category: layout
+    name: exactly-three-equal-feature-cards
+    severity: P0
+    description: >
+      A row of exactly three equal-weight cards (icon, title, two lines).
+      Real features are not equally important.
+    signals:
+      - "three-column feature grid with identical card weight"
+      - "equal heights"
+      - "thin-line icon on top"
+    false_positives:
+      - "genuinely three items of equal importance"
+      - "an established pattern used across the product"
+    diagnostic_questions:
+      - Are these three items genuinely equal in importance?
+      - Is there content that deserves more room?
+      - Does the count follow the content, or the grid?
+    remediation_principle: Let importance drive size; allow an uneven count and uneven weight.
+    avoid:
+      - "mechanically converting to a bento grid"
+      - "forcing four or five items"
+    validation:
+      - "hierarchy visible between features"
+      - "count follows content"
+
+  - id: layout-03
+    category: layout
+    name: numbered-three-step-row
+    severity: P2
+    description: A "how it works" 1·2·3 row in pastel circles, echoing the three-card block.
+    signals:
+      - "three numbered circles"
+      - "appears on the same page as another triptych"
+    false_positives:
+      - "the process genuinely has three steps"
+    diagnostic_questions:
+      - "Does the process really have three steps?"
+      - "Is the triptych repeated on the page?"
+    remediation_principle: Show the real number of steps; vary the rhythm between sections.
+    avoid:
+      - "removing the section"
+      - "replacing circles with another shape cliché"
+    validation:
+      - "step count matches reality"
+      - "page rhythm varies"
+
+  - id: layout-04
+    category: layout
+    name: three-tier-pricing-middle-highlighted
+    severity: P2
+    description: Three tiers with the middle one ringed, scaled and badged "Most popular".
+    signals:
+      - "three plans"
+      - "middle scaled/ringed"
+      - "\"Most popular\" badge"
+    false_positives:
+      - "the product genuinely has three plans and the middle is genuinely the recommended one"
+    diagnostic_questions:
+      - "Do three tiers reflect the real commercial offer?"
+      - "Is the highlight true?"
+    remediation_principle: Reflect the real offer; highlight only what is genuinely recommended.
+    avoid:
+      - "inventing or removing tiers for visual reasons"
+    validation:
+      - "tiers match the commercial reality"
+
+  - id: layout-05
+    category: layout
+    name: total-symmetry-no-tension
+    severity: P1
+    description: Everything centered or in perfect grids; no element breaks the frame; monotone vertical rhythm.
+    signals:
+      - "every section same width/alignment/padding"
+      - "identical section spacing throughout"
+    false_positives:
+      - "documentation"
+      - "forms"
+      - "dense data UI"
+      - "deliberate rigorous grid systems"
+    diagnostic_questions:
+      - Does every section deserve the same weight?
+      - Is the vertical rhythm varied between major and minor sections?
+    remediation_principle: Vary section rhythm and density according to importance.
+    avoid:
+      - "forcing asymmetry"
+      - "adding tilted or overlapping decoration"
+    validation:
+      - "vertical rhythm reflects importance"
+      - "key section reads first"
+
+  - id: layout-06
+    category: layout
+    name: generic-four-column-footer
+    severity: P2
+    description: Product / Company / Resources / Legal with links that lead nowhere.
+    signals:
+      - "four generic columns"
+      - "dead or \"#\" links"
+      - "categories with one item"
+    false_positives:
+      - "a large site that genuinely needs those groupings and whose links work"
+    diagnostic_questions:
+      - "Do all links resolve?"
+      - "Do the groupings match real content?"
+    remediation_principle: Footer should reflect what actually exists.
+    avoid:
+      - "redesigning the footer aesthetically while leaving links dead"
+    validation:
+      - "no dead links"
+      - "groupings match real sitemap"
+
+# =============================================================================
+# COMPONENTS
+# =============================================================================
+
+  - id: comp-01
+    category: components
+    name: uniform-radius-and-shadow-on-every-surface
+    severity: P1
+    description: >
+      Same border-radius and same soft shadow on card, button, input, image.
+      No elevation hierarchy — everything floats identically.
+    signals:
+      - "one radius value app-wide"
+      - "one shadow value app-wide"
+      - "no distinction page/section/surface/control"
+    false_positives:
+      - "a documented design system that deliberately uses one radius with hierarchy carried elsewhere"
+    diagnostic_questions:
+      - Is there a rule stating which elements get which radius and elevation?
+      - Can a user tell interactive from static by looking?
+    remediation_principle: >
+      Establish a surface hierarchy — page / section / surface / interactive / control —
+      and let radius, border and elevation differ across levels.
+    avoid:
+      - "globally sharpening corners"
+      - "removing all shadows"
+      - "adopting a different single value"
+    validation:
+      - "radius and elevation scales exist with stated roles"
+      - "interactive elements distinguishable"
+
+  - id: comp-02
+    category: components
+    name: cardocalypse
+    severity: P1
+    description: Every content block wrapped in a card, including blocks that need no container.
+    signals:
+      - "text-only sections wrapped in bordered boxes"
+      - "nested cards"
+      - "cards inside cards"
+    false_positives:
+      - "dashboards and feeds where cards are the correct affordance"
+    diagnostic_questions:
+      - Does this block need a container, or just whitespace?
+      - Are cards nested?
+    remediation_principle: >
+      Separate with whitespace first, then a small background shift, then elevation.
+      Add a border only if all three fail.
+    avoid:
+      - "converting every card into a bento tile"
+    validation:
+      - "containers only where they serve grouping"
+      - "no nested cards"
+
+  - id: comp-03
+    category: components
+    name: reflex-glassmorphism
+    severity: P2
+    description: Translucent blurred surfaces applied by reflex rather than for depth or focus.
+    signals:
+      - "backdrop-blur on surfaces with nothing meaningful behind them"
+      - "glass on opaque backgrounds"
+    false_positives:
+      - a navbar overlaying scrolling content where translucency shows continuity
+      - modal scrims, media overlays
+      - a coherent, documented glass system
+    diagnostic_questions:
+      - "Is there content behind that the blur relates to?"
+      - "Does it aid focus or hierarchy?"
+    remediation_principle: Keep glass only where layering is real and communicates depth.
+    avoid:
+      - "banning glassmorphism"
+      - "replacing it with grain or another texture trend"
+    validation:
+      - "translucency only over real layered content"
+      - "text contrast verified over it"
+
+  - id: comp-04
+    category: components
+    name: uniform-1px-border-or-colored-left-strip
+    severity: P1
+    description: A flat grey 1px border on every card, or a decorative 3–4px coloured left strip.
+    signals:
+      - "identical border on all surfaces"
+      - "coloured left strip used decoratively rather than semantically"
+    false_positives:
+      - "the left strip used for genuine semantic state (info/warn/error)"
+      - "a documented bordered system"
+    diagnostic_questions:
+      - "Does the strip encode state?"
+      - "Is the border doing work whitespace could do?"
+    remediation_principle: Reserve the coloured strip for real semantic state; default surfaces to borderless.
+    avoid:
+      - "removing all borders dogmatically"
+    validation:
+      - "borders serve separation where whitespace failed"
+      - "strips are semantic"
+
+  - id: comp-05
+    category: components
+    name: icon-in-pastel-rounded-square
+    severity: P2
+    description: Every feature icon placed in the same pastel rounded square or circle.
+    signals:
+      - "identical icon container across all features"
+      - "same tint"
+      - "same size"
+    false_positives:
+      - "a documented icon-container component used consistently as a system"
+    diagnostic_questions:
+      - "Does the container add meaning?"
+      - "Do all icons need equal prominence?"
+    remediation_principle: Let the icon system reflect hierarchy; containers are optional.
+    avoid:
+      - "swapping to a different container shape trend"
+    validation:
+      - "icon treatment varies with importance or is documented as intentional"
+
+  - id: comp-06
+    category: components
+    name: default-icon-semantics
+    severity: P2
+    description: >
+      Sparkles = AI, Zap = fast, Shield = secure, ArrowRight on every CTA —
+      the most statistically frequent icon names, chosen by frequency not meaning.
+    signals:
+      - "sparkle next to every AI mention"
+      - "the same 5-6 icons repeated"
+      - "arrow welded to every button"
+    false_positives:
+      - "the icon genuinely is the clearest signifier"
+      - "an established product iconography"
+    diagnostic_questions:
+      - "Does the icon clarify or decorate?"
+      - "Would removing it lose anything?"
+    remediation_principle: Keep icons that clarify; remove decorative ones. The set matters less than the intent.
+    avoid:
+      - "swapping Lucide for another trendy icon set"
+      - "banning any library"
+    validation:
+      - "each icon has a reason"
+      - "decorative icons removed"
+
+  - id: comp-07
+    category: components
+    name: oversized-centered-section-icon
+    severity: P2
+    description: A large icon in a pastel circle centered above every section heading, repeated identically.
+    signals:
+      - "same icon-circle pattern heading each section"
+    false_positives:
+      - "a documented section-header component"
+    diagnostic_questions:
+      - "Does the icon help navigation or fill space?"
+    remediation_principle: Use section headers that carry content, not ornament.
+    avoid:
+      - "replacing with another ornament"
+    validation:
+      - "section headers differentiated by content"
+
+  - id: comp-08
+    category: components
+    name: inconsistent-system-logic
+    severity: P1
+    description: >
+      No rule governs which elements get rounding, elevation or colour; colours used
+      as raw values rather than semantic tokens; stacked CTAs of differing widths.
+    signals:
+      - "mixed radius values with no scale"
+      - "hard-coded colours beside tokens"
+      - "misaligned sibling controls"
+    false_positives:
+      - "legacy areas being migrated"
+      - "documented exceptions"
+    diagnostic_questions:
+      - Is there a token layer, and is it used consistently?
+      - Do sibling controls align?
+    remediation_principle: Make the system's rules explicit and apply them; consistency is the deliverable.
+    avoid:
+      - "rewriting the design system wholesale"
+    validation:
+      - "tokens used consistently"
+      - "sibling controls aligned"
+      - "exceptions documented"
+
+# =============================================================================
+# SPACING
+# =============================================================================
+
+  - id: space-01
+    category: spacing
+    name: flat-uniform-spacing
+    severity: P2
+    description: The same gap and padding value everywhere; no spatial hierarchy between major and minor content.
+    signals:
+      - "one gap value app-wide"
+      - "identical section padding"
+      - "arbitrary one-off values beside it"
+    false_positives:
+      - "dense utilitarian UI where uniform rhythm aids scanning"
+    diagnostic_questions:
+      - "Does spacing group related content?"
+      - "Do major sections breathe more than minor ones?"
+    remediation_principle: Use space to express grouping and importance; adopt a scale and respect it.
+    avoid:
+      - "inflating all whitespace"
+      - "adopting a fashionable oversized-whitespace look"
+    validation:
+      - "spacing scale exists"
+      - "proximity reflects relationships"
+
+  - id: space-02
+    category: spacing
+    name: arbitrary-off-scale-values
+    severity: P2
+    description: One-off pixel values (e.g. 37px, 13px) sitting beside scale values, revealing eyeballed spacing.
+    signals:
+      - "arbitrary bracket values"
+      - "magic numbers in CSS"
+      - "inconsistent sibling gaps"
+    false_positives:
+      - "optical corrections that are deliberate and commented"
+    diagnostic_questions:
+      - "Is this value a correction or an accident?"
+      - "Is it commented?"
+    remediation_principle: Snap to the scale; keep and comment genuine optical corrections.
+    avoid:
+      - "mechanically rounding values that were deliberate optical fixes"
+    validation:
+      - "values on scale or documented as optical corrections"
+
+# =============================================================================
+# IMAGERY
+# =============================================================================
+
+  - id: img-01
+    category: imagery
+    name: placeholder-and-generated-imagery
+    severity: P1
+    description: >
+      Gradient placeholders instead of product screenshots, auto-generated avatars,
+      interchangeable stock photography, or generated illustration used as content.
+    signals:
+      - "gradient blocks where a screenshot belongs"
+      - "DiceBear-style avatars"
+      - "stock \"diverse team at laptop\""
+    false_positives:
+      - pre-launch product with genuinely nothing to show (should be stated, not faked)
+      - illustration that is a deliberate, owned part of the brand
+      - stock imagery selected and art-directed consistently
+    diagnostic_questions:
+      - Do real assets exist in the repository that are not being used?
+      - Does the image show the actual product?
+    remediation_principle: >
+      Prefer the project's real assets. If none exist, show less rather than faking more.
+    avoid:
+      - generating replacement AI illustrations
+      - replacing a real brand identity with generic artwork
+      - adding decorative blobs
+    validation:
+      - "real assets used where available"
+      - "no fabricated proof"
+
+  - id: img-02
+    category: imagery
+    name: plastic-3d-blobs-and-isometric-illustration
+    severity: P2
+    description: Floating iridescent 3D shapes or too-smooth isometric illustrations with a plastic finish.
+    signals:
+      - "abstract floating shapes with no referent"
+      - "uniformly smooth shading"
+      - "perfect symmetry"
+    false_positives:
+      - "an owned"
+      - "consistent illustration system by a named illustrator or studio"
+    diagnostic_questions:
+      - "Do these visuals relate to the product?"
+      - "Are they consistent as a system?"
+    remediation_principle: Visuals should depict or relate to the product; otherwise remove them.
+    avoid:
+      - "substituting another decorative visual trend"
+    validation:
+      - "imagery relates to product or is removed"
+
+  - id: img-03
+    category: imagery
+    name: fabricated-product-mockup
+    severity: P1
+    description: >
+      A glassy fake dashboard with invented charts and round numbers instead of a
+      real screenshot of the application.
+    signals:
+      - "invented metrics"
+      - "generic chart bars"
+      - "UI that does not exist in the codebase"
+    false_positives:
+      - "a clearly-labelled illustrative concept"
+      - "a genuine screenshot styled for presentation"
+    diagnostic_questions:
+      - "Does this UI exist in the product?"
+      - "Are the numbers real or plausible-looking?"
+    remediation_principle: Use a real screenshot, or present the feature without a fabricated proof.
+    avoid:
+      - "regenerating a nicer fake mockup"
+    validation:
+      - "mockup corresponds to real UI or is removed/labelled"
+
+  - id: img-04
+    category: imagery
+    name: generated-image-artifacts
+    severity: P0
+    description: >
+      Signs of generated imagery in hero/content visuals. In 2026 fingers are no longer
+      reliable; text inside images, reflections and light coherence are.
+    signals:
+      - warped or nonsensical text inside the image (signage, badges, mocked UI)
+      - shadows pointing in inconsistent directions, reflections that do not match
+      - blur by subject importance rather than by depth
+      - tiling/repeating texture, duplicate faces in crowds
+      - skin with no pore texture, uniform over-detail everywhere
+    false_positives:
+      - deliberate, disclosed AI illustration that is part of the product's identity
+      - heavy stylisation or artistic post-processing
+      - legitimate stock with unusual lighting
+    diagnostic_questions:
+      - Is there text inside the image, and is it coherent?
+      - Does the lighting resolve to one source?
+      - Is the use of generated imagery disclosed and intentional?
+    remediation_principle: Replace with real assets where trust matters (people, product, proof).
+    avoid:
+      - "asserting the image is AI-generated as fact"
+      - "generating a replacement"
+    validation:
+      - "images supporting trust claims are real"
+      - "or their nature is disclosed"
+
+  - id: img-05
+    category: imagery
+    name: greyed-blurred-logo-wall
+    severity: P1
+    description: '"Trusted by" strip of desaturated logos with no link, case study or verification.'
+    signals:
+      - "logos at low opacity"
+      - "no links"
+      - "generic invented names"
+      - "no case studies anywhere"
+    false_positives:
+      - "real customers with permission; muted styling is a normal convention"
+    diagnostic_questions:
+      - "Are these real customers?"
+      - "Is there any evidence behind the claim?"
+    remediation_principle: Show real proof or remove the claim. This is a trust issue before an aesthetic one.
+    avoid:
+      - "restyling the logo wall while leaving the claim unverified"
+    validation:
+      - "logos real and attributable"
+      - "or section removed"
+
+  - id: img-06
+    category: imagery
+    name: generic-testimonials
+    severity: P1
+    description: >
+      Three five-star testimonials of identical length with generated-sounding
+      name pairs and auto-generated or stock avatars.
+    signals:
+      - "exactly three"
+      - "identical length"
+      - "uniform five stars"
+      - "vector auto-avatars"
+      - "no company or link"
+    false_positives:
+      - "real testimonials with attribution"
+      - "permission and links"
+    diagnostic_questions:
+      - "Are these quotes real and attributable?"
+      - "Is there a source?"
+    remediation_principle: Use real, attributed testimonials or remove the section.
+    avoid:
+      - "redesigning fake testimonials to look better"
+    validation:
+      - "testimonials attributable or removed"
+
+# =============================================================================
+# CONTENT
+# =============================================================================
+
+  - id: content-01
+    category: content
+    name: confident-empty-copy
+    severity: P1
+    description: >
+      "Transform your workflow", "Built for modern teams", "Unlock your potential" —
+      grammatically clean copy from which no actual feature can be named.
+    signals:
+      - "uplift verbs with no object"
+      - "no product noun in the headline"
+      - "subhead restates the headline"
+    false_positives:
+      - "deliberately broad positioning for a platform"
+      - "brand voice validated by the team"
+    diagnostic_questions:
+      - After reading the hero, can you name what the product does?
+      - Does any sentence contain a specific, falsifiable claim?
+    remediation_principle: Say what the product is and for whom, in specific language.
+    avoid:
+      - "rewriting into a different generic register"
+      - "adding buzzwords"
+    validation:
+      - "a reader can state what the product does after the hero"
+
+  - id: content-02
+    category: content
+    name: default-tier-and-faq-boilerplate
+    severity: P2
+    description: Starter / Pro / Business at round default prices, and an FAQ that paraphrases the headline.
+    signals:
+      - "default tier names"
+      - "$0/$29/$99-style round numbers"
+      - "FAQ answers restating marketing copy"
+    false_positives:
+      - "those genuinely are the plan names and prices"
+    diagnostic_questions:
+      - "Do these names and prices reflect the real offer?"
+      - "Does the FAQ answer real questions?"
+    remediation_principle: Reflect the real commercial offer; FAQs should answer questions users actually ask.
+    avoid:
+      - "renaming tiers for aesthetic reasons"
+    validation:
+      - "tiers and FAQ match reality"
+
+  - id: content-03
+    category: content
+    name: leftover-placeholders-and-metadata
+    severity: P0
+    description: >
+      Lorem ipsum, placeholder emails/phones, "Company Name", default page title,
+      missing Open Graph, default favicon — content that was never filled in.
+    signals:
+      - "lorem ipsum"
+      - "your@email.com"
+      - "'555-' phone numbers"
+      - "<title>My App</title>"
+      - "missing og:image"
+      - "default framework favicon"
+    false_positives:
+      - "genuine work in progress on a non-public branch"
+    diagnostic_questions:
+      - "Is this shipped or a work in progress?"
+      - "Does sharing the URL produce a preview card?"
+    remediation_principle: Fill in the real content and metadata; this is completion, not aesthetics.
+    avoid:
+      - "inventing plausible fake content to fill the gaps"
+    validation:
+      - "no placeholders"
+      - "title/description/OG/favicon set"
+
+# =============================================================================
+# IDENTITY
+# =============================================================================
+
+  - id: identity-01
+    category: identity
+    name: brother-test-failure
+    severity: P0
+    meta_signal: true
+    description: >
+      META-SIGNAL. With the logo hidden, the interface could belong to another
+      product in another category without changing its visual system.
+    signals:
+      - no recurring motif belonging to this product
+      - no distinctive button shape, pressed state, glyph, texture or rhythm
+      - swapping the logo would break nothing
+    false_positives:
+      - internal tools that deliberately use a corporate or platform system
+      - white-label products that must stay neutral by design
+      - products intentionally built on a public design system
+    diagnostic_questions:
+      - Hide the logo — could this be a CRM, fintech, PM tool, AI SaaS, dev tool or analytics dashboard?
+      - What single element belongs only to this product?
+      - Is neutrality a requirement here?
+    remediation_principle: >
+      Run the art-direction workflow. Define ONE motif that belongs to this product and
+      apply it with restraint. Identity comes from consistency, not from decoration.
+    avoid:
+      - adding decorative elements to manufacture personality
+      - adopting a fashionable aesthetic wholesale
+      - introducing grain, blobs, tilts or mascots as identity substitutes
+    validation:
+      - a named direction is documented
+      - one motif recurs meaningfully
+      - the interface is no longer interchangeable with a different category
+
+  - id: identity-02
+    category: identity
+    name: no-visual-leitmotif
+    severity: P1
+    description: No single recurring element (glyph, button shape, pressed state, corner treatment, texture) is owned by the brand.
+    signals:
+      - "nothing recurs distinctively"
+      - "every component is the library default"
+    false_positives:
+      - "documented minimalism where restraint is the identity and executed rigorously"
+    diagnostic_questions:
+      - "What would someone recognise from a screenshot with no logo?"
+    remediation_principle: Choose one motif and apply it consistently; one is enough.
+    avoid:
+      - "adding several motifs at once"
+      - "decorating"
+    validation:
+      - "one motif identified and applied consistently"
+
+  - id: identity-03
+    category: identity
+    name: the-2026-tasteful-default
+    severity: P1
+    description: >
+      The anti-slop reaction became its own cliché: cream background, editorial serif,
+      sage/terracotta accent, light grain. Swapping one unchosen default for another
+      resets the clock.
+    signals:
+      - "cream + editorial serif + sage/terracotta + grain adopted together with no brand reason"
+    false_positives:
+      - "an editorial or craft brand where this direction is genuinely appropriate and owned"
+    diagnostic_questions:
+      - Was this direction chosen for the product, or adopted because it reads as "not AI"?
+      - Does the brand have any relationship to this palette?
+    remediation_principle: Derive the direction from the product, not from what currently signals good taste.
+    avoid:
+      - "this skill itself producing this outcome — check every remediation against this rule"
+    validation:
+      - "direction justified by product/audience/content"
+      - "not by trend avoidance"
+
+# =============================================================================
+# MOTION  (12 tells — research Part III)
+# =============================================================================
+
+  - id: motion-01
+    category: motion
+    name: identical-fade-in-up-everywhere
+    severity: P0
+    description: >
+      Every element enters with opacity 0→1 and a ~20px rise, ~300ms, ease-in-out.
+      Motion exists but carries no hierarchy: heading, button and footer arrive identically.
+    signals:
+      - "one shared entrance animation applied to all elements"
+      - "same duration/curve/distance everywhere"
+    false_positives:
+      - "a deliberate minimal motion system with one entrance"
+      - "documented and restrained"
+    diagnostic_questions:
+      - Does the motion express any hierarchy?
+      - Would removing it lose information?
+    remediation_principle: >
+      One authored moment rather than scattered identical entrances. Motion should
+      communicate state, not simulate life.
+    avoid:
+      - "swapping fade-in-up for a different universal animation"
+      - "adding more motion"
+    validation:
+      - "entrance motion reduced to where it matters"
+      - "hierarchy expressed"
+
+  - id: motion-02
+    category: motion
+    name: linear-stagger-delays
+    severity: P2
+    description: Perfectly regular stagger (0.1 / 0.2 / 0.3 / 0.4s) — mechanical rather than tuned.
+    signals:
+      - "delays computed as index * constant"
+      - "identical increment throughout"
+    false_positives:
+      - "list virtualisation or data-driven sequences where regularity is correct"
+    diagnostic_questions:
+      - "Was the rhythm listened to"
+      - "or calculated?"
+    remediation_principle: Tune the rhythm by eye; irregular increments read as authored.
+    avoid:
+      - "randomising delays programmatically"
+    validation:
+      - "stagger tuned deliberately or removed"
+
+  - id: motion-03
+    category: motion
+    name: page-load-triggered-instead-of-scroll
+    severity: P0
+    description: >
+      Animations fire on page load, so everything below the fold has finished
+      animating before the user arrives.
+    signals:
+      - "entrance animations bound to mount/load"
+      - "no intersection observation"
+    false_positives:
+      - "above-the-fold-only animation"
+      - "single-viewport apps"
+    diagnostic_questions:
+      - "Do below-fold sections animate before being seen?"
+    remediation_principle: Trigger on viewport entry, slightly before the element is reached.
+    avoid:
+      - "adding a heavy scroll library when a native observer suffices"
+    validation:
+      - "below-fold motion triggers on scroll"
+      - "no new dependency"
+
+  - id: motion-04
+    category: motion
+    name: single-entrance-direction
+    severity: P2
+    description: Everything enters from the same direction; no compositional pattern.
+    signals:
+      - "all translateY from below"
+      - "no directional variation tied to layout"
+    false_positives:
+      - "a deliberate single-axis motion system"
+      - "vertical reading flow"
+    diagnostic_questions:
+      - "Does direction relate to composition or origin of the element?"
+    remediation_principle: Direction should relate to where the element comes from or belongs.
+    avoid:
+      - "alternating directions arbitrarily to look varied"
+    validation:
+      - "direction justified by composition"
+
+  - id: motion-05
+    category: motion
+    name: bounce-elastic-easing-on-ui-chrome
+    severity: P1
+    description: Modals overshooting, cards springing into place, bouncing buttons. Spring physics belong to physical objects.
+    signals:
+      - "elastic/overshoot easing on dialogs"
+      - "menus"
+      - "cards; bounce keyframes on chrome"
+    false_positives:
+      - "draggable/gesture-driven elements where spring physics model real movement"
+    diagnostic_questions:
+      - "Is this element physical/draggable?"
+      - "Does overshoot convey anything?"
+    remediation_principle: Ease interface motion out smoothly; reserve springs for gesture-driven physical elements.
+    avoid:
+      - "removing all easing"
+      - "making motion instant"
+    validation:
+      - "chrome uses smooth ease-out"
+      - "springs only on physical interactions"
+
+  - id: motion-06
+    category: motion
+    name: fake-live-status-pulse
+    severity: P1
+    description: A pulsing status dot implying live telemetry on static data.
+    signals:
+      - "pulse animation on a status indicator with no data source behind it"
+    false_positives:
+      - "a real heartbeat/streaming feed driving the indicator"
+    diagnostic_questions:
+      - "Is there a real data source?"
+      - "Does the pulse correspond to updates?"
+    remediation_principle: Animate only when data actually changes; solid colour for static status.
+    avoid:
+      - "removing the status indicator itself"
+    validation:
+      - "animation tied to real updates"
+      - "or made static"
+
+  - id: motion-07
+    category: motion
+    name: decorative-blinking-caret
+    severity: P2
+    description: A fake terminal caret or typewriter effect in hero copy. Only real inputs own a cursor.
+    signals:
+      - "blinking underscore/caret in a heading"
+      - "typewriter animation on marketing copy"
+    false_positives:
+      - "an actual terminal emulator"
+      - "a real input"
+      - "a product that is a CLI/editor"
+    diagnostic_questions:
+      - "Is there a real input?"
+      - "Is the product actually a terminal?"
+    remediation_principle: Drop the fake caret; use a real input or deliberate monospaced treatment.
+    avoid:
+      - "replacing with another attention-grabbing text effect"
+    validation:
+      - "no fake carets"
+      - "typography carries the emphasis"
+
+  - id: motion-08
+    category: motion
+    name: infinite-logo-marquee
+    severity: P1
+    description: Continuously scrolling logo/partner strip with no controls and no pause.
+    signals:
+      - "infinite translateX animation on a logo row"
+      - "no pause on hover/focus"
+      - "ignores reduced motion"
+    false_positives:
+      - "a deliberate ticker for genuinely live data (prices"
+      - "status) with controls"
+    diagnostic_questions:
+      - "Can the user read at their own pace?"
+      - "Is the content live?"
+    remediation_principle: Static row, grid, or a carousel with controls.
+    avoid:
+      - "keeping the marquee and only adding a pause button as a token fix"
+    validation:
+      - "content readable at user pace"
+      - "reduced motion respected"
+
+  - id: motion-09
+    category: motion
+    name: gratuitous-image-hover-transform
+    severity: P2
+    description: Every image scales or rotates on hover with no meaning — "I added a hover".
+    signals:
+      - "scale/rotate transform on all images including non-interactive ones"
+    false_positives:
+      - "gallery thumbnails where the zoom previews an action"
+      - "e-commerce product zoom"
+    diagnostic_questions:
+      - "Is the image interactive?"
+      - "Does the hover preview what will happen?"
+    remediation_principle: Hover should indicate what will happen; otherwise let imagery sit still.
+    avoid:
+      - "replacing with a different decorative hover"
+    validation:
+      - "hover effects only on interactive elements and informative"
+
+  - id: motion-10
+    category: motion
+    name: hover-opacity-only-or-no-states
+    severity: P1
+    description: >
+      The opposite failure — hovers that only change opacity, buttons that snap,
+      no active/pressed state, clickable cards with no feedback.
+    signals:
+      - "only opacity transitions on interactive elements"
+      - "no :active state"
+      - "no transition on buttons"
+    false_positives:
+      - "touch-first products where hover is irrelevant — but active states must still exist"
+    diagnostic_questions:
+      - "Is there a pressed state?"
+      - "Does feedback confirm the action?"
+    remediation_principle: Interactive elements need hover, focus, active and disabled states that carry information.
+    avoid:
+      - "adding decorative motion instead of state feedback"
+    validation:
+      - "all interactive elements have complete state coverage"
+
+  - id: motion-11
+    category: motion
+    name: layout-property-animation
+    severity: P1
+    description: >
+      Animating width, height, padding or margin — a performance defect causing
+      reflow and jank as much as a taste issue.
+    signals:
+      - "transitions on width/height/padding/margin"
+      - "janky accordions"
+      - "animated layout properties"
+    false_positives:
+      - "grid-template-rows transitions and other modern"
+      - "performant techniques for height"
+    diagnostic_questions:
+      - "Does this animation cause reflow?"
+      - "Can transform/opacity achieve it?"
+    remediation_principle: Animate transform and opacity; use modern techniques for height changes.
+    avoid:
+      - "removing the interaction rather than fixing the technique"
+    validation:
+      - "no layout-property animation on the main path"
+      - "motion is smooth"
+
+  - id: motion-12
+    category: motion
+    name: reduced-motion-ignored-and-no-page-transition
+    severity: P1
+    description: >
+      prefers-reduced-motion not handled (two lines of CSS), and SPA navigation
+      either instant or fading the whole page through a blank state.
+    signals:
+      - "no prefers-reduced-motion query anywhere"
+      - "wrapper-fade page transitions through blank"
+    false_positives:
+      - "no client-side navigation at all; the reduced-motion part still applies"
+    diagnostic_questions:
+      - "Is reduced motion honoured?"
+      - "Does navigation communicate direction?"
+    remediation_principle: >
+      Always honour prefers-reduced-motion. If page transitions exist, they should
+      convey direction and continuity rather than fading through nothing.
+    avoid:
+      - "adding cinematic page transitions as a fix"
+    validation:
+      - "reduced motion respected globally"
+      - "navigation continuous or instant"
+
+# =============================================================================
+# ACCESSIBILITY
+# =============================================================================
+
+  - id: a11y-01
+    category: accessibility
+    name: insufficient-contrast
+    severity: P0
+    description: Light grey on white, thin text over gradients, low-contrast placeholder and helper text.
+    signals:
+      - "body text below contrast thresholds"
+      - "text over gradient/image without scrim"
+      - "thin weights at small sizes"
+    false_positives:
+      - "genuinely decorative"
+      - "non-informative text that is aria-hidden"
+    diagnostic_questions:
+      - "Is this text informational?"
+      - "Was contrast measured or eyeballed?"
+    remediation_principle: Measure contrast rather than eyeballing it; dark themes and thin type need particular care.
+    avoid:
+      - "darkening everything indiscriminately and flattening hierarchy"
+    validation:
+      - "contrast measured and passing for all informational text"
+
+  - id: a11y-02
+    category: accessibility
+    name: missing-focus-states
+    severity: P0
+    description: No visible keyboard focus indicator, or default outlines removed without replacement.
+    signals:
+      - "outline:none with no replacement"
+      - "no :focus-visible styles"
+      - "custom controls without focus treatment"
+    false_positives:
+      - "none — this is never acceptable for interactive elements"
+    diagnostic_questions:
+      - "Can the whole page be operated and seen by keyboard alone?"
+    remediation_principle: Every interactive element needs a visible, high-contrast focus indicator.
+    avoid:
+      - "restoring the default outline only"
+      - "without integrating it into the system"
+    validation:
+      - "full keyboard traversal with visible focus at every stop"
+
+  - id: a11y-03
+    category: accessibility
+    name: missing-error-empty-loading-states
+    severity: P1
+    description: Only the happy path was designed — no empty, error, loading or partial states.
+    signals:
+      - "no empty-state components"
+      - "no error styling"
+      - "spinner-only loading"
+      - "forms without validation display"
+    false_positives:
+      - "states genuinely handled elsewhere in a shared layer"
+    diagnostic_questions:
+      - "What does this screen look like with no data?"
+      - "With a failed request?"
+    remediation_principle: Design the states the product will actually spend time in.
+    avoid:
+      - "adding decorative empty-state illustrations as the whole solution"
+    validation:
+      - "empty"
+      - "error"
+      - "loading and disabled states exist and are consistent"
+
+  - id: a11y-04
+    category: accessibility
+    name: hover-only-information
+    severity: P1
+    description: Information available only on hover, unreachable by keyboard or touch.
+    signals:
+      - "tooltips as the sole carrier of meaning"
+      - "actions revealed only on hover"
+    false_positives:
+      - "progressive enhancement where the information is also available elsewhere"
+    diagnostic_questions:
+      - "Is this reachable by keyboard and on touch?"
+    remediation_principle: Never let hover be the only path to information or actions.
+    avoid:
+      - "removing tooltips instead of making them reachable"
+    validation:
+      - "all information reachable by keyboard and touch"
+
+# =============================================================================
+# RESPONSIVE
+# =============================================================================
+
+  - id: resp-01
+    category: responsive
+    name: mobile-never-reviewed
+    severity: P0
+    description: Horizontal overflow, truncated text, broken navigation — the mobile view was never opened.
+    signals:
+      - "horizontal scroll at small widths"
+      - "fixed widths"
+      - "overlapping elements"
+      - "broken burger menu"
+    false_positives:
+      - "desktop-only tools with a documented minimum width"
+    diagnostic_questions:
+      - "Has the mobile view actually been viewed?"
+      - "Is there horizontal scroll?"
+    remediation_principle: Fix real breakage first; this is function before aesthetics.
+    avoid:
+      - "hiding content on mobile to make the layout work"
+    validation:
+      - "no horizontal overflow at mobile/tablet/desktop/wide"
+      - "navigation works"
+
+  - id: resp-02
+    category: responsive
+    name: unscaled-typography-and-collapsing-grids
+    severity: P1
+    description: Desktop type sizes on mobile, grids that become absurd, CTAs that break, excessive whitespace at wide widths.
+    signals:
+      - "display sizes unchanged across breakpoints"
+      - "multi-column grids not reflowing"
+      - "content unbounded on wide screens"
+    false_positives:
+      - "fluid type systems already handling this"
+    diagnostic_questions:
+      - "Does the type scale adapt?"
+      - "Is there a max content width?"
+    remediation_principle: Type scale and grid must adapt; content needs a sensible maximum measure.
+    avoid:
+      - "adding a fluid-type dependency when the project has its own system"
+    validation:
+      - "four breakpoints checked"
+      - "measure comfortable at each"
